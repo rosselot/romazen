@@ -27,11 +27,18 @@
 
 .logo {
     font-family: var(--font-serif);
-    font-size: 24px;
-    letter-spacing: 0.2em;
+    font-size: 28px;
+    letter-spacing: 0.3em;
     color: var(--soft-ivory);
-    font-weight: 400;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    z-index: 10;
+    text-decoration: none;
+    transition: color 0.3s ease;
 }
+
+/* Removed .logoImage and .scrolled .logoImage as we switched to text logo */
 
 .scrolled .logo {
     color: var(--onyx-black);
