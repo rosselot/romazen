@@ -29,8 +29,12 @@
     font-family: var(--font-serif);
     font-size: 24px;
     letter-spacing: 0.2em;
-    color: var(--onyx-black);
+    color: var(--soft-ivory);
     font-weight: 400;
+}
+
+.scrolled .logo {
+    color: var(--onyx-black);
 }
 
 .desktopLinks {
@@ -43,6 +47,11 @@
     font-size: 13px;
     text-transform: uppercase;
     letter-spacing: 0.1em;
+    color: var(--soft-ivory);
+    opacity: 0.8;
+}
+
+.scrolled .link {
     color: var(--onyx-black);
     opacity: 0.7;
 }
@@ -61,9 +70,13 @@
     background: none;
     border: none;
     cursor: pointer;
-    color: var(--onyx-black);
+    color: var(--soft-ivory);
     display: flex;
     align-items: center;
+}
+
+.scrolled .iconButton {
+    color: var(--onyx-black);
 }
 
 .menuButton {
@@ -71,6 +84,10 @@
     background: none;
     border: none;
     cursor: pointer;
+    color: var(--soft-ivory);
+}
+
+.scrolled .menuButton {
     color: var(--onyx-black);
 }
 
