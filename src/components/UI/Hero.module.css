@@ -1,0 +1,75 @@
+.hero {
+    position: relative;
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    text-align: center;
+    background: var(--onyx-black);
+}
+
+.backgroundImage {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('/romazen_hero_nano_banana_1766188431619.png');
+    background-size: cover;
+    background-position: center;
+    z-index: 1;
+    opacity: 0.6;
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(18, 18, 18, 0.4), rgba(18, 18, 18, 0.8));
+    z-index: 2;
+}
+
+.content {
+    position: relative;
+    z-index: 3;
+    color: var(--soft-ivory);
+    padding: 0 20px;
+}
+
+.eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.4em;
+    font-size: 12px;
+    display: block;
+    margin-bottom: 24px;
+}
+
+.headline {
+    font-size: clamp(48px, 8vw, 92px);
+    line-height: 1.1;
+    margin-bottom: 30px;
+}
+
+.subheadline {
+    font-size: clamp(16px, 2vw, 20px);
+    margin-bottom: 48px;
+    opacity: 0.9;
+    font-weight: 300;
+}
+
+.cta {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+@media (max-width: 640px) {
+    .cta {
+        flex-direction: column;
+        align-items: center;
+    }
+}

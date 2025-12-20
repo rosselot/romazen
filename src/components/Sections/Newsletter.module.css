@@ -1,0 +1,48 @@
+.section {
+    padding: 120px 0;
+    background: white;
+    text-align: center;
+}
+
+.content {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.heading {
+    font-size: 32px;
+    margin-bottom: 16px;
+}
+
+.text {
+    font-size: 16px;
+    color: var(--smoke-gray);
+    margin-bottom: 40px;
+    font-weight: 300;
+}
+
+.form {
+    display: flex;
+    gap: 10px;
+}
+
+.input {
+    flex: 1;
+    padding: 15px 20px;
+    border: 1px solid rgba(18, 18, 18, 0.1);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    background: var(--soft-ivory);
+    transition: var(--transition-smooth);
+}
+
+.input:focus {
+    outline: none;
+    border-color: var(--onyx-black);
+}
+
+@media (max-width: 480px) {
+    .form {
+        flex-direction: column;
+    }
+}

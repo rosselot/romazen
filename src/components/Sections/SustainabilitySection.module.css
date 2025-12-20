@@ -1,0 +1,38 @@
+.section {
+    padding: 80px 0;
+    background: var(--soft-ivory);
+    border-top: 1px solid rgba(18, 18, 18, 0.05);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 60px;
+    text-align: center;
+}
+
+.icon {
+    color: var(--champagne-gold);
+    margin-bottom: 24px;
+}
+
+.title {
+    font-size: 18px;
+    margin-bottom: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.text {
+    font-size: 14px;
+    color: var(--smoke-gray);
+    line-height: 1.6;
+    font-weight: 300;
+}
+
+@media (max-width: 768px) {
+    .grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+}
