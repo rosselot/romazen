@@ -13,14 +13,15 @@
 }
 
 .primary {
-    background: var(--onyx-black);
-    color: var(--soft-ivory);
-    border-color: rgba(249, 249, 247, 0.2);
+    background: var(--soft-ivory);
+    color: var(--onyx-black);
+    border-color: var(--soft-ivory);
 }
 
 .primary:hover {
-    background: var(--soft-ivory);
-    color: var(--onyx-black);
+    background: transparent;
+    color: var(--soft-ivory);
+    border-color: var(--soft-ivory);
 }
 
 .secondary {
