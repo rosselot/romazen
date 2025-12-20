@@ -15,21 +15,23 @@
 .primary {
     background: var(--onyx-black);
     color: var(--soft-ivory);
+    border-color: rgba(249, 249, 247, 0.2);
 }
 
 .primary:hover {
-    background: var(--smoke-gray);
+    background: var(--soft-ivory);
+    color: var(--onyx-black);
 }
 
 .secondary {
     background: transparent;
-    border-color: var(--onyx-black);
-    color: var(--onyx-black);
+    border-color: var(--soft-ivory);
+    color: var(--soft-ivory);
 }
 
 .secondary:hover {
-    background: var(--onyx-black);
-    color: var(--soft-ivory);
+    background: var(--soft-ivory);
+    color: var(--onyx-black);
 }
 
 .gold {
