@@ -2,6 +2,8 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 
+import ScanRedirect from './pages/ScanRedirect';
+
 function App() {
   return (
     <Routes>
@@ -10,6 +12,7 @@ function App() {
       <Route path="/soaps" element={<Home />} />    {/* Temporary for demo */}
       <Route path="/about" element={<Home />} />    {/* Temporary for demo */}
       <Route path="/shop" element={<Home />} />     {/* Temporary for demo */}
+      <Route path="/scan" element={<ScanRedirect />} />
     </Routes>
   );
 }
