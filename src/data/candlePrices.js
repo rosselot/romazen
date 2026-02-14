@@ -26,10 +26,11 @@ export const STORE_CANDLE_PRICES = [
   },
   {
     id: 'wall-street-smoke-12oz',
-    name: 'Wall Street Smoke',
+    name: 'New York Smoke',
     size: '12 oz',
     burnTime: '65-70 hrs',
     price: '$52.00',
     notes: 'Tobacco leaf, oud, black tea',
+    image: '/assets/images/product-candle.png',
   },
 ];
