@@ -8,8 +8,9 @@ import { INSTAGRAM_URL } from '../../data/social';
 const Navbar = () => {
     const location = useLocation();
     const isHome = location.pathname === '/';
-    const [isOpen, setIsOpen] = useState(false);
+    const [menuPath, setMenuPath] = useState(null);
     const [scrolled, setScrolled] = useState(false);
+    const isOpen = menuPath === location.pathname;
 
     useEffect(() => {
         const handleScroll = () => {
@@ -36,12 +37,12 @@ const Navbar = () => {
                     aria-label={isOpen ? 'Close navigation menu' : 'Open navigation menu'}
                     aria-expanded={isOpen}
                     className={styles.menuButton}
-                    onClick={() => setIsOpen(!isOpen)}
+                    onClick={() => setMenuPath(isOpen ? null : location.pathname)}
                 >
                     {isOpen ? <X size={24} /> : <Menu size={24} />}
                 </button>
 
-                <Link to="/" className={styles.logo}>
+                <Link to="/" className={styles.logo} onClick={() => setMenuPath(null)}>
                     ROMAZEN
                 </Link>
 
@@ -79,7 +80,7 @@ const Navbar = () => {
                                 key={link.name}
                                 to={link.path}
                                 className={styles.mobileLink}
-                                onClick={() => setIsOpen(false)}
+                                onClick={() => setMenuPath(null)}
                             >
                                 {link.name}
                             </Link>

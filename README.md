@@ -2,7 +2,7 @@
 
 Marketing website for Romazen, built with React, Vite, and React Router.
 
-## Tech Stack
+## Stack
 
 - React 19
 - Vite 7
@@ -10,50 +10,44 @@ Marketing website for Romazen, built with React, Vite, and React Router.
 - Framer Motion
 - CSS Modules
 - ESLint 9 (flat config)
+- Vitest + Testing Library + Node test runner
 
-## Local Development
-
-### Requirements
+## Requirements
 
 - Node.js 20+
 - npm 10+
 
-### Setup
+## Local Development
 
 ```bash
 npm install
-```
-
-### Run
-
-```bash
 npm run dev
 ```
 
-The app runs on Vite's local dev server (default: `http://localhost:5173`).
+Dev server default: `http://localhost:5173`
 
-## Available Scripts
+## Scripts
 
 - `npm run dev`: start local dev server
 - `npm start`: start local dev server
 - `npm run build`: production build into `dist/`
-- `npm run preview`: preview the production build locally
+- `npm run preview`: preview production build
 - `npm run lint`: run ESLint
-- `npm run test`: run Vitest UI tests plus Node-based regression checks
-- `npm run test:ui`: run Vitest/RTL tests
-- `npm run test:checks`: run Node-based regression checks
+- `npm run test`: run UI tests + Node regression checks
+- `npm run test:ui`: run Vitest/RTL tests only
+- `npm run test:checks`: run Node regression checks only
 - `npm run test:watch`: run Vitest in watch mode
 - `npm run test:coverage`: run Vitest with coverage
 - `npm run images:audit`: report image payload and oversized files
-- `npm run images:optimize`: generate responsive WebP variants into `public/assets/images/optimized` (requires optional `sharp` dependency)
+- `npm run images:optimize`: generate WebP variants to `public/assets/images/optimized` (requires optional `sharp`)
 
 ## Routes
 
-Defined in `/src/App.jsx`:
+Defined in `src/App.jsx`:
 
-- `/` -> QR-first candle pricing page
 - `/` -> Home page
-- `/prices` -> QR-first candle pricing page
+- `/prices` -> In-store candle pricing page
+- `/scan` -> In-store candle pricing page
 - `/shop` -> All products collection page
 - `/candles` -> Candle collection page
 - `/soaps` -> Soap collection page
@@ -64,33 +58,46 @@ Defined in `/src/App.jsx`:
 - `/contact` -> Contact page
 - `/privacy` -> Privacy policy page
 - `/terms` -> Terms of service page
-- `/scan` -> QR-first candle pricing page
-- `*` -> custom 404 page
+- `*` -> Custom 404 page
 
 ## Deployment
 
-- Vercel config in `/vercel.json` rewrites all paths to `index.html` for SPA routing.
-- Vercel config applies basic security headers (CSP, frame, referrer, permissions, MIME sniffing).
-- Build output directory: `dist/`
-- Static crawl assets are provided at `/robots.txt` and `/sitemap.xml`.
+- `vercel.json` rewrites all routes to `index.html` for SPA routing.
+- Security headers are set in `vercel.json` (CSP, frame, referrer, permissions, MIME sniffing).
+- Build output: `dist/`
+- Crawl assets: `public/robots.txt`, `public/sitemap.xml`
 
 ## Quality Automation
 
-- GitHub Actions workflow in `/.github/workflows/ci.yml` runs lint, test, build, and image audit on push/PR.
+- CI workflow in `.github/workflows/ci.yml` runs lint, tests, build, and image audit on push/PR.
 
-## Project Structure
+## Code Review (2026-02-14)
 
-```text
-src/
-  components/
-    Layout/
-    Sections/
-    UI/
-  data/
-  pages/
-public/
-```
+### Executed checks
+
+- `npm run lint` ✅
+- `npm run test` ✅
+- `npm run build` ✅
+
+### Findings
+
+1. Resolved (was High): CSP blocked inline JSON-LD structured data
+   - `index.html` uses inline schema markup in `<script type="application/ld+json">`.
+   - `vercel.json` now includes the exact `sha256` hash for this inline JSON-LD script in `script-src`.
+   - Result: structured data remains allowed without enabling broad inline scripts.
+   - References: `index.html:22`, `vercel.json:24`
+
+2. Resolved (was Medium): Mobile nav remained open after some route changes
+   - `Navbar` now closes menu state on `location.pathname` changes.
+   - A regression UI test verifies open menu -> route change -> menu closes.
+   - References: `src/components/Layout/Navbar.jsx`, `src/App.test.jsx`
+
+### Test coverage gaps
+
+- No test validates CSP compatibility for inline JSON-LD behavior.
+- No dedicated test for browser history back/forward behavior with menu state.
+- Resolved: `usePageMeta` now has tests covering `canonical`, `robots`, and Open Graph/Twitter tags.
 
 ## Current Limitations
 
-- Newsletter form UI is present, but no submission backend is wired.
+- Newsletter form UI exists, but no submission backend is wired.

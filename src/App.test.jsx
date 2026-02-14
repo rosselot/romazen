@@ -1,5 +1,5 @@
 import { MemoryRouter } from 'react-router-dom';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import App from './App';
 
 const renderWithRoute = (route) =>
@@ -37,5 +37,19 @@ describe('App routing UI', () => {
   it('renders not found page on unknown route', () => {
     renderWithRoute('/missing-page');
     expect(screen.getByRole('heading', { name: /page not found/i })).toBeInTheDocument();
+  });
+
+  it('closes mobile menu on route change', () => {
+    renderWithRoute('/candles');
+
+    expect(screen.getAllByRole('link', { name: /candle prices/i })).toHaveLength(1);
+
+    const menuButton = document.querySelector('button[aria-label="Open navigation menu"]');
+    expect(menuButton).not.toBeNull();
+    fireEvent.click(menuButton);
+    expect(screen.getAllByRole('link', { name: /candle prices/i })).toHaveLength(2);
+
+    fireEvent.click(screen.getAllByRole('link', { name: /romazen/i })[0]);
+    expect(screen.getAllByRole('link', { name: /candle prices/i })).toHaveLength(1);
   });
 });
