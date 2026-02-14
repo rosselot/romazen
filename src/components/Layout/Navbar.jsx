@@ -26,7 +26,13 @@ const Navbar = () => {
     return (
         <nav className={`${styles.navbar} ${scrolled ? styles.scrolled : ''}`}>
             <div className={styles.container}>
-                <button className={styles.menuButton} onClick={() => setIsOpen(!isOpen)}>
+                <button
+                    type="button"
+                    aria-label={isOpen ? 'Close navigation menu' : 'Open navigation menu'}
+                    aria-expanded={isOpen}
+                    className={styles.menuButton}
+                    onClick={() => setIsOpen(!isOpen)}
+                >
                     {isOpen ? <X size={24} /> : <Menu size={24} />}
                 </button>
 
@@ -43,7 +49,7 @@ const Navbar = () => {
                 </div>
 
                 <div className={styles.actions}>
-                    <button className={styles.iconButton}>
+                    <button type="button" aria-label="Open shopping bag" className={styles.iconButton}>
                         <ShoppingBag size={20} />
                     </button>
                 </div>

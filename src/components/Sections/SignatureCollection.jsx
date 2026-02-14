@@ -3,19 +3,28 @@ import styles from './SignatureCollection.module.css';
 import { PRODUCTS } from '../../data/products';
 import { motion } from 'framer-motion';
 import Button from '../UI/Button';
+import { useNavigate } from 'react-router-dom';
 
-const SignatureCollection = () => {
+const SignatureCollection = ({
+    products = PRODUCTS,
+    eyebrow = 'Curated Selection',
+    heading = 'Signature Collection',
+    subheading = 'Explore our most-loved artisanal creations.',
+    showFooterCta = true
+}) => {
+    const navigate = useNavigate();
+
     return (
         <section className={styles.section}>
             <div className="container">
                 <div className={styles.header}>
-                    <span className={styles.eyebrow}>Curated Selection</span>
-                    <h2 className={styles.heading}>Signature Collection</h2>
-                    <p className={styles.subheading}>Explore our most-loved artisanal creations.</p>
+                    <span className={styles.eyebrow}>{eyebrow}</span>
+                    <h2 className={styles.heading}>{heading}</h2>
+                    <p className={styles.subheading}>{subheading}</p>
                 </div>
 
                 <div className={styles.grid}>
-                    {PRODUCTS.map((product, index) => (
+                    {products.map((product, index) => (
                         <motion.div
                             key={product.id}
                             initial={{ opacity: 0, y: 30 }}
@@ -27,7 +36,7 @@ const SignatureCollection = () => {
                             <div className={styles.imageWrapper}>
                                 <img src={product.image} alt={product.name} className={styles.image} />
                                 <div className={styles.overlay}>
-                                    <Button variant="primary">Add to Cart</Button>
+                                    <Button variant="primary" onClick={() => navigate('/shop')}>Add to Cart</Button>
                                 </div>
                             </div>
                             <div className={styles.info}>
@@ -40,9 +49,11 @@ const SignatureCollection = () => {
                     ))}
                 </div>
 
-                <div className={styles.footer}>
-                    <Button variant="secondary" size="large">Shop All Products</Button>
-                </div>
+                {showFooterCta && (
+                    <div className={styles.footer}>
+                        <Button variant="secondary" size="large" onClick={() => navigate('/shop')}>Shop All Products</Button>
+                    </div>
+                )}
             </div>
         </section>
     );

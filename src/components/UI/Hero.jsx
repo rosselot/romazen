@@ -2,8 +2,11 @@ import React from 'react';
 import styles from './Hero.module.css';
 import Button from './Button';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 const Hero = () => {
+    const navigate = useNavigate();
+
     return (
         <section className={styles.hero}>
             <div className={styles.overlay}></div>
@@ -42,8 +45,8 @@ const Hero = () => {
                     transition={{ duration: 0.8, delay: 0.6 }}
                     className={styles.cta}
                 >
-                    <Button variant="primary" size="large">Shop Collection</Button>
-                    <Button variant="secondary" size="large">Discover Romazen</Button>
+                    <Button variant="primary" size="large" onClick={() => navigate('/shop')}>Shop Collection</Button>
+                    <Button variant="secondary" size="large" onClick={() => navigate('/about')}>Discover Romazen</Button>
                 </motion.div>
             </div>
 

@@ -67,6 +67,15 @@
     opacity: 1;
 }
 
+.link:focus-visible,
+.iconButton:focus-visible,
+.menuButton:focus-visible,
+.mobileLink:focus-visible,
+.logo:focus-visible {
+    outline: 2px solid var(--champagne-gold);
+    outline-offset: 2px;
+}
+
 .actions {
     display: flex;
     gap: 20px;

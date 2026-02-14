@@ -1,16 +1,94 @@
-# React + Vite
+# Romazen Website
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Marketing website for Romazen, built with React, Vite, and React Router.
 
-Currently, two official plugins are available:
+## Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- React 19
+- Vite 7
+- React Router 7
+- Framer Motion
+- CSS Modules
+- ESLint 9 (flat config)
 
-## React Compiler
+## Local Development
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Requirements
 
-## Expanding the ESLint configuration
+- Node.js 20+
+- npm 10+
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Setup
+
+```bash
+npm install
+```
+
+### Run
+
+```bash
+npm run dev
+```
+
+The app runs on Vite's local dev server (default: `http://localhost:5173`).
+
+## Available Scripts
+
+- `npm run dev`: start local dev server
+- `npm start`: start local dev server
+- `npm run build`: production build into `dist/`
+- `npm run preview`: preview the production build locally
+- `npm run lint`: run ESLint
+- `npm run test`: run Vitest UI tests plus Node-based regression checks
+- `npm run test:ui`: run Vitest/RTL tests
+- `npm run test:checks`: run Node-based regression checks
+- `npm run test:watch`: run Vitest in watch mode
+- `npm run test:coverage`: run Vitest with coverage
+- `npm run images:audit`: report image payload and oversized files
+- `npm run images:optimize`: generate responsive WebP variants into `public/assets/images/optimized` (requires optional `sharp` dependency)
+
+## Routes
+
+Defined in `/src/App.jsx`:
+
+- `/` -> Home page
+- `/shop` -> All products collection page
+- `/candles` -> Candle collection page
+- `/soaps` -> Soap collection page
+- `/fragrances` -> Home fragrance collection page
+- `/cleaning` -> Eco cleaning collection page
+- `/about` -> Brand story page
+- `/sustainability` -> Sustainability page
+- `/contact` -> Contact page
+- `/privacy` -> Privacy policy page
+- `/terms` -> Terms of service page
+- `/scan` -> redirects to Romazen Instagram
+- `*` -> custom 404 page
+
+## Deployment
+
+- Vercel config in `/vercel.json` rewrites all paths to `index.html` for SPA routing.
+- Vercel config applies basic security headers (CSP, frame, referrer, permissions, MIME sniffing).
+- Build output directory: `dist/`
+- Static crawl assets are provided at `/robots.txt` and `/sitemap.xml`.
+
+## Quality Automation
+
+- GitHub Actions workflow in `/.github/workflows/ci.yml` runs lint, test, build, and image audit on push/PR.
+
+## Project Structure
+
+```text
+src/
+  components/
+    Layout/
+    Sections/
+    UI/
+  data/
+  pages/
+public/
+```
+
+## Current Limitations
+
+- Newsletter form UI is present, but no submission backend is wired.

@@ -12,6 +12,11 @@
     transition: var(--transition-smooth);
 }
 
+.button:focus-visible {
+    outline: 2px solid var(--champagne-gold);
+    outline-offset: 2px;
+}
+
 .primary {
     background: var(--soft-ivory);
     color: var(--onyx-black);

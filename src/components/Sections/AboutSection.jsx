@@ -15,7 +15,7 @@ const AboutSection = () => {
                         className={styles.imageWrapper}
                     >
                         <img
-                            src="/romazen_soap_nano_banana_1766188458998.png"
+                            src="/assets/images/product-soap-artisanal.png"
                             alt="Romazen Artisanal Soap"
                             className={styles.image}
                         />

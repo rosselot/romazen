@@ -1,0 +1,47 @@
+.page {
+    padding: 140px 0 100px;
+    min-height: 60vh;
+    background: var(--soft-ivory);
+}
+
+.inner {
+    max-width: 840px;
+    margin: 0 auto;
+}
+
+.eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    font-size: 11px;
+    color: var(--smoke-gray);
+    display: block;
+    margin-bottom: 18px;
+}
+
+.title {
+    font-size: clamp(32px, 5vw, 52px);
+    line-height: 1.2;
+    margin-bottom: 20px;
+}
+
+.text {
+    color: var(--smoke-gray);
+    font-size: 17px;
+    margin-bottom: 28px;
+}
+
+.actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.richText {
+    color: var(--smoke-gray);
+    font-size: 16px;
+    line-height: 1.75;
+}
+
+.richText p + p {
+    margin-top: 14px;
+}

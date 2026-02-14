@@ -16,13 +16,17 @@ const Newsletter = () => {
                     <h2 className={styles.heading}>Join the Romazen Circle</h2>
                     <p className={styles.text}>Exclusive launches & refined moments, delivered to your inbox.</p>
 
-                    <form className={styles.form} onClick={(e) => e.preventDefault()}>
+                    <form className={styles.form} onSubmit={(e) => e.preventDefault()}>
+                        <label htmlFor="newsletter-email" className={styles.srOnly}>Email address</label>
                         <input
+                            id="newsletter-email"
                             type="email"
                             placeholder="Your email address"
+                            autoComplete="email"
+                            required
                             className={styles.input}
                         />
-                        <Button variant="primary">Subscribe</Button>
+                        <Button variant="primary" type="submit">Subscribe</Button>
                     </form>
                 </motion.div>
             </div>
