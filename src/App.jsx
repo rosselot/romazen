@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import CollectionPage from './pages/CollectionPage';
 import BasicPage from './pages/BasicPage';
 import CandlePricingPage from './pages/CandlePricingPage';
+import { useValentineMode } from './hooks/useValentineMode';
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -17,6 +18,15 @@ const ScrollToTop = () => {
 
 function App() {
   const hasCategory = (keyword) => (product) => product.category.toLowerCase().includes(keyword);
+  const isValentineMode = useValentineMode();
+
+  React.useEffect(() => {
+    document.body.classList.toggle('theme-valentine', isValentineMode);
+
+    return () => {
+      document.body.classList.remove('theme-valentine');
+    };
+  }, [isValentineMode]);
 
   return (
     <>

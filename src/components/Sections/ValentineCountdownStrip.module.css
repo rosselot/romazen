@@ -1,0 +1,21 @@
+.strip {
+    background: linear-gradient(90deg, #ffe5ec 0%, #f7d6e0 50%, #f9e6c7 100%);
+    border-top: 1px solid rgba(131, 54, 80, 0.2);
+    border-bottom: 1px solid rgba(131, 54, 80, 0.2);
+    margin-top: 88px;
+    padding: 10px 16px;
+    text-align: center;
+}
+
+.text {
+    color: #5b2740;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    letter-spacing: 0.03em;
+}
+
+@media (max-width: 768px) {
+    .strip {
+        margin-top: 76px;
+    }
+}

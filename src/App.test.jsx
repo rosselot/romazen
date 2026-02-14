@@ -52,4 +52,11 @@ describe('App routing UI', () => {
     fireEvent.click(screen.getAllByRole('link', { name: /romazen/i })[0]);
     expect(screen.getAllByRole('link', { name: /candle prices/i })).toHaveLength(1);
   });
+
+  it('shows valentine strip and badges when mode is forced on', () => {
+    renderWithRoute('/?valentine=1');
+    expect(screen.getByLabelText(/valentine's day promotion/i)).toBeInTheDocument();
+    expect(screen.getByText(/ends tonight at 11:59 pm/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/valentine edition/i).length).toBeGreaterThan(0);
+  });
 });

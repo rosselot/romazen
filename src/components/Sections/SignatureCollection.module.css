@@ -46,6 +46,22 @@
     background: var(--soft-ivory);
 }
 
+.valentineBadge {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    z-index: 2;
+    background: linear-gradient(135deg, #b83b63 0%, #d14d74 100%);
+    color: #fff5f9;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 600;
+}
+
 .image {
     width: 100%;
     height: 100%;

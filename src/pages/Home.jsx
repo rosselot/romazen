@@ -5,6 +5,7 @@ import AboutSection from '../components/Sections/AboutSection';
 import SignatureCollection from '../components/Sections/SignatureCollection';
 import SustainabilitySection from '../components/Sections/SustainabilitySection';
 import Newsletter from '../components/Sections/Newsletter';
+import ValentineCountdownStrip from '../components/Sections/ValentineCountdownStrip';
 import { usePageMeta } from '../hooks/usePageMeta';
 
 const Home = () => {
@@ -15,6 +16,7 @@ const Home = () => {
 
     return (
         <Layout>
+            <ValentineCountdownStrip />
             <Hero />
             <AboutSection />
             <SignatureCollection />

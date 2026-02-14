@@ -39,6 +39,14 @@ body {
   overflow-x: hidden;
 }
 
+body.theme-valentine {
+  --soft-ivory: #fff6f8;
+  --champagne-gold: #d4a64f;
+  --smoke-gray: #8a5d6d;
+  --pale-sage: #e8c7d3;
+  --bg-primary: #fff6f8;
+}
+
 h1, h2, h3, h4, .serif {
   font-family: var(--font-serif);
   font-weight: 400;

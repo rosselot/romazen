@@ -101,3 +101,9 @@ Defined in `src/App.jsx`:
 ## Current Limitations
 
 - Newsletter form UI exists, but no submission backend is wired.
+
+## Seasonal Testing
+
+- Valentine mode is active on February 14 (local time).
+- Force on for QA: `/?valentine=1`
+- Force off for QA: `/?valentine=0`
