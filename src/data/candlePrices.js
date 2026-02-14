@@ -6,7 +6,7 @@ export const STORE_CANDLE_PRICES = [
     burnTime: '45-50 hrs',
     price: '$45.00',
     notes: 'White tea, soft musk, clean cotton',
-    image: '/assets/images/no-hexagonal-candle.jpeg',
+    image: '/assets/images/NoHexagonalCandleLight.jpeg',
   },
   {
     id: 'midnight-fig-8oz',
