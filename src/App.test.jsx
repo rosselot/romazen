@@ -22,6 +22,12 @@ describe('App routing UI', () => {
     expect(screen.queryByText(/manhattan fig/i)).not.toBeInTheDocument();
   });
 
+  it('renders QR candle pricing page on /prices', () => {
+    renderWithRoute('/prices');
+    expect(screen.getByRole('heading', { name: /in-store candle prices/i })).toBeInTheDocument();
+    expect(screen.getByText(/midnight fig/i)).toBeInTheDocument();
+  });
+
   it('renders legal content on /privacy', () => {
     renderWithRoute('/privacy');
     expect(screen.getByRole('heading', { name: /privacy policy/i })).toBeInTheDocument();

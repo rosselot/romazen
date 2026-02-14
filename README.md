@@ -51,7 +51,9 @@ The app runs on Vite's local dev server (default: `http://localhost:5173`).
 
 Defined in `/src/App.jsx`:
 
+- `/` -> QR-first candle pricing page
 - `/` -> Home page
+- `/prices` -> QR-first candle pricing page
 - `/shop` -> All products collection page
 - `/candles` -> Candle collection page
 - `/soaps` -> Soap collection page
@@ -62,7 +64,7 @@ Defined in `/src/App.jsx`:
 - `/contact` -> Contact page
 - `/privacy` -> Privacy policy page
 - `/terms` -> Terms of service page
-- `/scan` -> redirects to Romazen Instagram
+- `/scan` -> QR-first candle pricing page
 - `*` -> custom 404 page
 
 ## Deployment

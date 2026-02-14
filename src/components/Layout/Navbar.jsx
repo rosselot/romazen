@@ -19,9 +19,9 @@ const Navbar = () => {
     }, []);
 
     const navLinks = [
+        { name: 'Candle Prices', path: '/prices' },
         { name: 'Shop All', path: '/shop' },
         { name: 'Candles', path: '/candles' },
-        { name: 'Soaps', path: '/soaps' },
         { name: 'About', path: '/about' },
     ];
 

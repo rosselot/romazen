@@ -6,6 +6,7 @@ const appPath = new URL('../src/App.jsx', import.meta.url);
 
 const requiredRoutes = [
   '/',
+  '/prices',
   '/shop',
   '/candles',
   '/soaps',
