@@ -6,15 +6,16 @@ export const STORE_CANDLE_PRICES = [
     burnTime: '45-50 hrs',
     price: '$45.00',
     notes: 'White tea, soft musk, clean cotton',
-    image: '/assets/images/NoHexagonalCandleLight.jpeg',
+    image: '/assets/images/NoHexagonalOnBooks.jpeg',
   },
   {
     id: 'midnight-fig-8oz',
     name: 'Midnight Fig',
     size: '8 oz',
     burnTime: '45-50 hrs',
-    price: '$36.00',
+    price: '$80.00',
     notes: 'Wild fig, cedarwood, green leaves',
+    image: '/assets/images/RomaTallGarden.jpeg',
   },
   {
     id: 'silk-santal-12oz',
