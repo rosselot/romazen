@@ -4,7 +4,6 @@ import { PRODUCTS } from '../../data/products';
 import { motion } from 'framer-motion';
 import Button from '../UI/Button';
 import { useNavigate } from 'react-router-dom';
-import { useValentineMode } from '../../hooks/useValentineMode';
 
 const SignatureCollection = ({
     products = PRODUCTS,
@@ -14,7 +13,6 @@ const SignatureCollection = ({
     showFooterCta = true
 }) => {
     const navigate = useNavigate();
-    const isValentineMode = useValentineMode();
 
     return (
         <section className={styles.section}>
@@ -36,9 +34,6 @@ const SignatureCollection = ({
                             className={styles.productCard}
                         >
                             <div className={styles.imageWrapper}>
-                                {isValentineMode && product.valentineEdition && (
-                                    <span className={styles.valentineBadge}>Valentine Edition</span>
-                                )}
                                 <img src={product.image} alt={product.name} className={styles.image} />
                                 <div className={styles.overlay}>
                                     <Button variant="primary" onClick={() => navigate('/shop')}>Add to Cart</Button>

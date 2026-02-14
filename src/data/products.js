@@ -6,8 +6,7 @@ export const PRODUCTS = [
         price: '$48.00',
         description: 'A sophisticated blend of rare amber and dark musk, evoking the evening glow of a Manhattan loft.',
         notes: 'Amber, Dark Musk, Sandalwood',
-        image: '/assets/images/product-candle.png',
-        valentineEdition: true
+        image: '/assets/images/product-candle.png'
     },
     {
         id: 'manhattan-fig-soap',
@@ -25,8 +24,7 @@ export const PRODUCTS = [
         price: '$56.00',
         description: 'A delicate room mist that transforms your space into a sanctuary of calm.',
         notes: 'Sandalwood, White Silk, Vanilla',
-        image: '/assets/images/product-diffuser.png',
-        valentineEdition: true
+        image: '/assets/images/product-diffuser.png'
     },
     {
         id: 'white-tea-sage-cleaner',
