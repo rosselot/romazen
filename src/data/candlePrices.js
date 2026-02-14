@@ -6,7 +6,7 @@ export const STORE_CANDLE_PRICES = [
     burnTime: '45-50 hrs',
     price: '$45.00',
     notes: 'White tea, soft musk, clean cotton',
-    image: '/assets/images/candle-roman-marble.jpeg',
+    image: '/assets/images/no-hexagonal-candle.jpeg',
   },
   {
     id: 'midnight-fig-8oz',
@@ -31,6 +31,6 @@ export const STORE_CANDLE_PRICES = [
     burnTime: '65-70 hrs',
     price: '$52.00',
     notes: 'Tobacco leaf, oud, black tea',
-    image: '/assets/images/product-candle.png',
+    image: '/assets/images/CandleNotHexagonalCarlota.jpeg',
   },
 ];
