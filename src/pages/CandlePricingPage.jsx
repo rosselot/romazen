@@ -29,6 +29,15 @@ const CandlePricingPage = () => {
           <div className={styles.grid}>
             {STORE_CANDLE_PRICES.map((item) => (
               <article key={item.id} className={styles.card}>
+                {item.image && (
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className={styles.cardImage}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                )}
                 <div className={styles.top}>
                   <h2 className={styles.name}>{item.name}</h2>
                   <span className={styles.price}>{item.price}</span>

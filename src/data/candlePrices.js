@@ -1,11 +1,12 @@
 export const STORE_CANDLE_PRICES = [
   {
-    id: 'amber-noir-8oz',
-    name: 'Amber Noir',
+    id: 'roman-marble-8oz',
+    name: 'Roman Marble',
     size: '8 oz',
     burnTime: '45-50 hrs',
-    price: '$34.00',
-    notes: 'Amber, dark musk, sandalwood',
+    price: '$45.00',
+    notes: 'White tea, soft musk, clean cotton',
+    image: '/assets/images/candle-roman-marble.jpeg',
   },
   {
     id: 'midnight-fig-8oz',

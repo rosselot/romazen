@@ -41,6 +41,14 @@
   padding: 20px;
 }
 
+.cardImage {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  margin-bottom: 14px;
+  border: 1px solid rgba(18, 18, 18, 0.06);
+}
+
 .top {
   display: flex;
   justify-content: space-between;
