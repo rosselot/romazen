@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import styles from './Navbar.module.css';
-import { ShoppingBag, Menu, X } from 'lucide-react';
+import { Instagram, Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { INSTAGRAM_URL } from '../../data/social';
 
 const Navbar = () => {
     const location = useLocation();
@@ -53,9 +54,15 @@ const Navbar = () => {
                 </div>
 
                 <div className={styles.actions}>
-                    <button type="button" aria-label="Open shopping bag" className={styles.iconButton}>
-                        <ShoppingBag size={20} />
-                    </button>
+                    <a
+                        href={INSTAGRAM_URL}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="Open Instagram profile"
+                        className={styles.iconButton}
+                    >
+                        <Instagram size={20} />
+                    </a>
                 </div>
             </div>
 
@@ -77,6 +84,14 @@ const Navbar = () => {
                                 {link.name}
                             </Link>
                         ))}
+                        <a
+                            href={INSTAGRAM_URL}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={styles.mobileLink}
+                        >
+                            Instagram
+                        </a>
                     </motion.div>
                 )}
             </AnimatePresence>

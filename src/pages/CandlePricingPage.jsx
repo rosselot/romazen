@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout/Layout';
 import Button from '../components/UI/Button';
 import { STORE_CANDLE_PRICES } from '../data/candlePrices';
+import { INSTAGRAM_URL } from '../data/social';
 import { usePageMeta } from '../hooks/usePageMeta';
 import styles from './CandlePricingPage.module.css';
 
@@ -53,6 +54,12 @@ const CandlePricingPage = () => {
             <div className={styles.actions}>
               <Button variant="secondary" onClick={() => navigate('/shop')}>Full Catalog</Button>
               <Button variant="primary" onClick={() => navigate('/')}>Brand Story</Button>
+              <Button
+                variant="secondary"
+                onClick={() => window.open(INSTAGRAM_URL, '_blank', 'noopener,noreferrer')}
+              >
+                Instagram
+              </Button>
             </div>
           </div>
         </div>

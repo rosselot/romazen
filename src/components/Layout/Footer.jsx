@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styles from './Footer.module.css';
+import instagramProfilePic from '../../assets/InstagramProfilePic.png';
+import { INSTAGRAM_URL, INSTAGRAM_HANDLE } from '../../data/social';
 
 const Footer = () => {
     return (
@@ -33,12 +35,15 @@ const Footer = () => {
 
                     <div className={styles.instagram}>
                         <h4 className={styles.heading}>Instagram</h4>
-                        <div className={styles.igGrid}>
-                            <div className={styles.igItem}></div>
-                            <div className={styles.igItem}></div>
-                            <div className={styles.igItem}></div>
-                            <div className={styles.igItem}></div>
-                        </div>
+                        <a
+                            href={INSTAGRAM_URL}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={styles.igProfile}
+                        >
+                            <img src={instagramProfilePic} alt="Romazen Instagram profile" className={styles.igImage} />
+                            <span className={styles.igHandle}>{INSTAGRAM_HANDLE}</span>
+                        </a>
                     </div>
                 </div>
 

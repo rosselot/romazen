@@ -54,20 +54,28 @@
     color: var(--champagne-gold);
 }
 
-.igGrid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
+.igProfile {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
     gap: 10px;
 }
 
-.igItem {
-    aspect-ratio: 1;
-    background: rgba(255, 255, 255, 0.1);
-    transition: var(--transition-smooth);
+.igImage {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.igItem:hover {
-    background: rgba(255, 255, 255, 0.2);
+.igHandle {
+    font-size: 14px;
+    opacity: 0.75;
+}
+
+.igProfile:hover .igHandle {
+    opacity: 1;
+    color: var(--champagne-gold);
 }
 
 .bottom {
