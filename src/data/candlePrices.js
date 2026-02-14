@@ -24,6 +24,7 @@ export const STORE_CANDLE_PRICES = [
     burnTime: '65-70 hrs',
     price: '$48.00',
     notes: 'Sandalwood, white silk, vanilla',
+    image: '/assets/images/PhotoCandlethird.jpeg',
   },
   {
     id: 'wall-street-smoke-12oz',
