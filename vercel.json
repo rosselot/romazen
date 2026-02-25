@@ -29,11 +29,11 @@
     "rewrites": [
         {
             "source": "/lab",
-            "destination": "https://candle-simulator-kzd1g1n7y-rosselots-projects.vercel.app/lab"
+            "destination": "https://candle-simulator.vercel.app/lab"
         },
         {
             "source": "/lab/:match*",
-            "destination": "https://candle-simulator-kzd1g1n7y-rosselots-projects.vercel.app/lab/:match*"
+            "destination": "https://candle-simulator.vercel.app/lab/:match*"
         },
         {
             "source": "/(.*)",
