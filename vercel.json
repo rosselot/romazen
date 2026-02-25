@@ -28,6 +28,14 @@
     ],
     "rewrites": [
         {
+            "source": "/lab",
+            "destination": "https://candle-simulator-kzd1g1n7y-rosselots-projects.vercel.app/lab"
+        },
+        {
+            "source": "/lab/:match*",
+            "destination": "https://candle-simulator-kzd1g1n7y-rosselots-projects.vercel.app/lab/:match*"
+        },
+        {
             "source": "/(.*)",
             "destination": "/index.html"
         }
