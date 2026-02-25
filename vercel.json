@@ -21,7 +21,7 @@
                 },
                 {
                     "key": "Content-Security-Policy",
-                    "value": "default-src 'self'; script-src 'self' 'sha256-vCXoW3MAl/6HDcEoGJIQVV7QW8mlVnR4CPDs4tYCrdM='; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data: https:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+                    "value": "default-src 'self' 'unsafe-inline' 'unsafe-eval' https://candle-simulator.vercel.app; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://candle-simulator.vercel.app; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: blob:; font-src 'self' data: https:; connect-src 'self' https://candle-simulator.vercel.app; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
                 }
             ]
         }
