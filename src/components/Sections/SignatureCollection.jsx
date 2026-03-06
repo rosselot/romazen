@@ -4,6 +4,7 @@ import { PRODUCTS } from '../../data/products';
 import { motion } from 'framer-motion';
 import Button from '../UI/Button';
 import { useNavigate } from 'react-router-dom';
+import { useCart } from '../../context/CartContext';
 
 const SignatureCollection = ({
     products = PRODUCTS,
@@ -13,6 +14,7 @@ const SignatureCollection = ({
     showFooterCta = true
 }) => {
     const navigate = useNavigate();
+    const { addItem } = useCart();
 
     return (
         <section className={styles.section}>
@@ -36,7 +38,7 @@ const SignatureCollection = ({
                             <div className={styles.imageWrapper}>
                                 <img src={product.image} alt={product.name} className={styles.image} />
                                 <div className={styles.overlay}>
-                                    <Button variant="primary" onClick={() => navigate('/shop')}>Add to Cart</Button>
+                                    <Button variant="primary" onClick={() => addItem(product)}>Add to Cart</Button>
                                 </div>
                             </div>
                             <div className={styles.info}>

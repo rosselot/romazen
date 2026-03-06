@@ -4,6 +4,8 @@ import Home from './pages/Home';
 import CollectionPage from './pages/CollectionPage';
 import BasicPage from './pages/BasicPage';
 import CandlePricingPage from './pages/CandlePricingPage';
+import { CartProvider } from './context/CartContext';
+import CartDrawer from './components/Cart/CartDrawer';
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -19,8 +21,9 @@ function App() {
   const hasCategory = (keyword) => (product) => product.category.toLowerCase().includes(keyword);
 
   return (
-    <>
+    <CartProvider>
       <ScrollToTop />
+      <CartDrawer />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/prices" element={<CandlePricingPage />} />
@@ -180,7 +183,7 @@ function App() {
           }
         />
       </Routes>
-    </>
+    </CartProvider>
   );
 }
 

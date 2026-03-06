@@ -9,21 +9,23 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "vitest run && node --test tests/**/*.test.mjs",
+    "test": "vitest run && node --test \"tests/**/*.test.mjs\"",
     "test:ui": "vitest run",
-    "test:checks": "node --test tests/**/*.test.mjs",
+    "test:checks": "node --test \"tests/**/*.test.mjs\"",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "images:audit": "node scripts/image-audit.mjs",
     "images:optimize": "node scripts/optimize-images.mjs"
   },
   "dependencies": {
+    "@stripe/stripe-js": "^8.9.0",
     "classnames": "^2.5.1",
     "framer-motion": "^12.23.26",
     "lucide-react": "^0.562.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "react-router-dom": "^7.11.0"
+    "react-router-dom": "^7.11.0",
+    "stripe": "^20.4.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
@@ -32,6 +34,7 @@
     "@types/react": "^19.2.5",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.1",
+    "dotenv": "^17.3.1",
     "eslint": "^9.39.1",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",

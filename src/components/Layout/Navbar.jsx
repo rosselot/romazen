@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import styles from './Navbar.module.css';
-import { Instagram, Menu, X } from 'lucide-react';
+import { Instagram, Menu, X, ShoppingBag } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { INSTAGRAM_URL } from '../../data/social';
+import { useCart } from '../../context/CartContext';
 
 const Navbar = () => {
     const location = useLocation();
     const isHome = location.pathname === '/';
     const [menuPath, setMenuPath] = useState(null);
     const [scrolled, setScrolled] = useState(false);
+    const { cartCount, setIsDrawerOpen } = useCart();
     const isOpen = menuPath === location.pathname;
 
     useEffect(() => {
@@ -55,6 +57,17 @@ const Navbar = () => {
                 </div>
 
                 <div className={styles.actions}>
+                    <button
+                        type="button"
+                        aria-label="Open shopping cart"
+                        className={styles.cartButton}
+                        onClick={() => setIsDrawerOpen(true)}
+                    >
+                        <ShoppingBag size={20} />
+                        {cartCount > 0 && (
+                            <span className={styles.cartBadge}>{cartCount}</span>
+                        )}
+                    </button>
                     <a
                         href={INSTAGRAM_URL}
                         target="_blank"
