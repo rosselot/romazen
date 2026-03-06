@@ -5,10 +5,12 @@ import Button from '../components/UI/Button';
 import { STORE_CANDLE_PRICES } from '../data/candlePrices';
 import { INSTAGRAM_URL } from '../data/social';
 import { usePageMeta } from '../hooks/usePageMeta';
+import { useCart } from '../context/CartContext';
 import styles from './CandlePricingPage.module.css';
 
 const CandlePricingPage = () => {
   const navigate = useNavigate();
+  const { addItem } = useCart();
   const [selectedId, setSelectedId] = React.useState(null);
   const selectedItem = STORE_CANDLE_PRICES.find((item) => item.id === selectedId) ?? null;
 
@@ -103,9 +105,22 @@ const CandlePricingPage = () => {
                 <p className={styles.meta}>{selectedItem.size} · {selectedItem.burnTime}</p>
                 <p className={styles.notes}>{selectedItem.notes}</p>
                 {selectedItem.details && <p className={styles.details}>{selectedItem.details}</p>}
-                <span className={`${styles.stockBadge} ${selectedItem.inStock ? styles.inStock : styles.outOfStock}`}>
-                  {selectedItem.inStock ? 'In Stock' : 'Sold Out'}
-                </span>
+                
+                <div style={{ marginTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                    <span className={`${styles.stockBadge} ${selectedItem.inStock ? styles.inStock : styles.outOfStock}`}>
+                    {selectedItem.inStock ? 'In Stock' : 'Sold Out'}
+                    </span>
+                    <Button 
+                        variant="primary" 
+                        disabled={!selectedItem.inStock}
+                        onClick={() => {
+                            addItem(selectedItem);
+                            setSelectedId(null);
+                        }}
+                    >
+                        {selectedItem.inStock ? 'Add to Cart' : 'Unavailable'}
+                    </Button>
+                </div>
               </div>
             </div>
           )}
