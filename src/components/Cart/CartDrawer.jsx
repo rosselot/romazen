@@ -4,12 +4,9 @@ import { X, Minus, Plus, ShoppingBag } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Button from '../UI/Button';
 import styles from './CartDrawer.module.css';
-import { loadStripe } from '@stripe/stripe-js';
 
 // Replace string price with a number to calculate total
 const parsePrice = (priceStr) => Number.parseFloat(priceStr.replaceAll(/[^0-9.]/g, ''));
-
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
 const CartDrawer = () => {
   const { items, isDrawerOpen, setIsDrawerOpen, updateQuantity, removeItem, cartTotal } = useCart();

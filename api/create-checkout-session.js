@@ -1,11 +1,14 @@
+/* global process */
 import Stripe from 'stripe';
-import { PRODUCTS } from '../src/data/products.js';
-import { STORE_CANDLE_PRICES } from '../src/data/candlePrices.js';
+import { createClient } from '@supabase/supabase-js';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-// Combine products directly for simple lookup
-const allProducts = [...PRODUCTS, ...STORE_CANDLE_PRICES];
+// Initialize Supabase client
+const supabase = createClient(
+  process.env.VITE_SUPABASE_URL,
+  process.env.VITE_SUPABASE_ANON_KEY
+);
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -14,11 +17,21 @@ export default async function handler(req, res) {
 
   try {
     const { items } = req.body;
+    
+    // Fetch authoritative products from Supabase
+    const { data: dbProducts, error } = await supabase
+      .from('products')
+      .select('*')
+      .in('id', items.map(item => item.id));
+
+    if (error) {
+      throw new Error(`Failed to fetch products from database: ${error.message}`);
+    }
 
     // Validate and format items for Stripe Checkout
     const lineItems = items.map((item) => {
       // Find the authoritative product on the server (prevent client price manipulation)
-      const serverProduct = allProducts.find(p => p.id === item.id);
+      const serverProduct = dbProducts.find(p => p.id === item.id);
       
       if (!serverProduct) {
          throw new Error(`Product ${item.id} not found.`);

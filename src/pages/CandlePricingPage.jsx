@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout/Layout';
 import Button from '../components/UI/Button';
-import { STORE_CANDLE_PRICES } from '../data/candlePrices';
+import { supabase } from '../utils/supabase';
 import { INSTAGRAM_URL } from '../data/social';
 import { usePageMeta } from '../hooks/usePageMeta';
 import { useCart } from '../context/CartContext';
@@ -11,13 +11,49 @@ import styles from './CandlePricingPage.module.css';
 const CandlePricingPage = () => {
   const navigate = useNavigate();
   const { addItem } = useCart();
-  const [selectedId, setSelectedId] = React.useState(null);
-  const selectedItem = STORE_CANDLE_PRICES.find((item) => item.id === selectedId) ?? null;
+  const [selectedId, setSelectedId] = useState(null);
+  const [candles, setCandles] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Fetch candles from Supabase on mount
+  useEffect(() => {
+    const fetchCandles = async () => {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .order('name');
+      
+      if (error) {
+        console.error('Error fetching candles:', error);
+      } else {
+        setCandles(data || []);
+      }
+      setIsLoading(false);
+    };
+
+    fetchCandles();
+  }, []);
+
+  const selectedItem = candles.find((item) => item.id === selectedId) ?? null;
 
   usePageMeta({
     title: 'In-Store Candle Prices | Romazen',
     description: 'Scan-ready in-store Romazen candle pricing, sizes, and scent notes.',
   });
+
+  if (isLoading) {
+    return (
+      <Layout>
+        <section className={styles.page}>
+          <div className="container">
+            <div className={styles.header}>
+              <h1 className={styles.title}>Loading Prices...</h1>
+            </div>
+          </div>
+        </section>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
@@ -32,7 +68,7 @@ const CandlePricingPage = () => {
           </div>
 
           <div className={styles.grid}>
-            {STORE_CANDLE_PRICES.map((item) => (
+            {candles.map((item) => (
               <article
                 key={item.id}
                 className={styles.card}
