@@ -14,10 +14,19 @@ const CandlePricingPage = () => {
   const [selectedId, setSelectedId] = useState(null);
   const [candles, setCandles] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [errorMsg, setErrorMsg] = useState(null);
 
   // Fetch candles from Supabase on mount
   useEffect(() => {
     const fetchCandles = async () => {
+      // Prevent crash if env variables were not injected by Vite/Vercel
+      if (!supabase) {
+        console.error('Supabase client not initialized. Check VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY environment variables.');
+        setErrorMsg('Database configuration missing. Please check Vercel environment variables.');
+        setIsLoading(false);
+        return;
+      }
+
       const { data, error } = await supabase
         .from('products')
         .select('*')
@@ -25,6 +34,7 @@ const CandlePricingPage = () => {
       
       if (error) {
         console.error('Error fetching candles:', error);
+        setErrorMsg(`Failed to load catalog: ${error.message}`);
       } else {
         setCandles(data || []);
       }
@@ -48,6 +58,23 @@ const CandlePricingPage = () => {
           <div className="container">
             <div className={styles.header}>
               <h1 className={styles.title}>Loading Prices...</h1>
+            </div>
+          </div>
+        </section>
+      </Layout>
+    );
+  }
+
+  if (errorMsg) {
+    return (
+      <Layout>
+        <section className={styles.page}>
+          <div className="container">
+            <div className={styles.header}>
+              <h1 className={styles.title}>Error</h1>
+              <p className={styles.subtitle} style={{ color: 'var(--out-of-stock, #7f1d1d)', marginTop: '1rem' }}>
+                {errorMsg}
+              </p>
             </div>
           </div>
         </section>
