@@ -1,3 +1,4 @@
+/* global process */
 import Stripe from 'stripe';
 import { PRODUCTS } from '../src/data/products.js';
 import { STORE_CANDLE_PRICES } from '../src/data/candlePrices.js';
