@@ -4,8 +4,12 @@ import { createClient } from '@supabase/supabase-js';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-const supabaseUrl = process.env.VITE_SUPABASE_URL || '';
-const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY || '';
+let supabaseUrl = (process.env.VITE_SUPABASE_URL || '').replace(/['"]/g, '').trim();
+let supabaseAnonKey = (process.env.VITE_SUPABASE_ANON_KEY || '').replace(/['"]/g, '').trim();
+
+if (supabaseUrl && !supabaseUrl.startsWith('http')) {
+  supabaseUrl = `https://${supabaseUrl}`;
+}
 
 // Initialize Supabase client only if vars exist
 const supabase = supabaseUrl && supabaseAnonKey
