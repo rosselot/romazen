@@ -1,5 +1,5 @@
 import { MemoryRouter } from 'react-router-dom';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import App from './App';
 
 const renderWithRoute = (route) =>
@@ -22,8 +22,36 @@ describe('App routing UI', () => {
 
   it('renders QR candle pricing page on /prices', async () => {
     renderWithRoute('/prices');
-    // Initially shows loading state or error state if supabase is null
-    expect(screen.getByRole('heading', { name: /loading prices|error/i })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: /in-store candle prices/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /open details for a roma in marble/i })).toBeInTheDocument();
+  });
+
+  it('redirects /scan to the pricing page', async () => {
+    renderWithRoute('/scan');
+    expect(await screen.findByRole('heading', { name: /in-store candle prices/i })).toBeInTheDocument();
+  });
+
+  it('closes the candle details modal on escape', async () => {
+    renderWithRoute('/prices');
+
+    fireEvent.click(await screen.findByRole('button', { name: /open details for a roma in marble/i }));
+    expect(screen.getByRole('dialog', { name: /a roma in marble/i })).toBeInTheDocument();
+
+    fireEvent.keyDown(document, { key: 'Escape' });
+    expect(screen.queryByRole('dialog', { name: /a roma in marble/i })).not.toBeInTheDocument();
+  });
+
+  it('closes the cart drawer on escape', async () => {
+    renderWithRoute('/prices');
+
+    fireEvent.click(await screen.findByRole('button', { name: /open details for a roma in marble/i }));
+    fireEvent.click(screen.getByRole('button', { name: /add to cart/i }));
+    expect(screen.getByRole('dialog', { name: /your cart/i })).toBeInTheDocument();
+
+    fireEvent.keyDown(document, { key: 'Escape' });
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog', { name: /your cart/i })).not.toBeInTheDocument();
+    });
   });
 
   it('renders legal content on /privacy', () => {

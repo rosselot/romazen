@@ -3,6 +3,7 @@ import { useCart } from '../../context/CartContext';
 import { X, Minus, Plus, ShoppingBag } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Button from '../UI/Button';
+import { useOverlayA11y } from '../../hooks/useOverlayA11y';
 import styles from './CartDrawer.module.css';
 
 // Replace string price with a number to calculate total
@@ -11,6 +12,16 @@ const parsePrice = (priceStr) => Number.parseFloat(priceStr.replaceAll(/[^0-9.]/
 const CartDrawer = () => {
   const { items, isDrawerOpen, setIsDrawerOpen, updateQuantity, removeItem, cartTotal } = useCart();
   const [isCheckingOut, setIsCheckingOut] = React.useState(false);
+  const drawerRef = React.useRef(null);
+  const closeButtonRef = React.useRef(null);
+  const closeDrawer = React.useCallback(() => setIsDrawerOpen(false), [setIsDrawerOpen]);
+
+  useOverlayA11y({
+    isOpen: isDrawerOpen,
+    containerRef: drawerRef,
+    initialFocusRef: closeButtonRef,
+    onClose: closeDrawer,
+  });
 
   const handleCheckout = async () => {
     if (items.length === 0) return;
@@ -54,20 +65,26 @@ const CartDrawer = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={() => setIsDrawerOpen(false)}
+            onClick={closeDrawer}
           />
           <motion.div
+            ref={drawerRef}
             className={styles.drawer}
             initial={{ x: '100%' }}
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="cart-drawer-title"
+            tabIndex={-1}
           >
             <div className={styles.header}>
-              <h2>Your Cart</h2>
+              <h2 id="cart-drawer-title">Your Cart</h2>
               <button
+                ref={closeButtonRef}
                 className={styles.closeButton}
-                onClick={() => setIsDrawerOpen(false)}
+                onClick={closeDrawer}
                 aria-label="Close cart"
               >
                 <X size={24} />
@@ -79,7 +96,7 @@ const CartDrawer = () => {
                 <div className={styles.emptyState}>
                   <ShoppingBag size={48} />
                   <p>Your cart is empty</p>
-                  <Button variant="secondary" onClick={() => setIsDrawerOpen(false)}>
+                  <Button variant="secondary" onClick={closeDrawer}>
                     Continue Shopping
                   </Button>
                 </div>

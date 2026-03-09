@@ -1,86 +1,74 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout/Layout';
 import Button from '../components/UI/Button';
 import { supabase } from '../utils/supabase';
 import { INSTAGRAM_URL } from '../data/social';
+import { STORE_CANDLE_PRICES, normalizeCandleRecord } from '../data/candlePrices';
 import { usePageMeta } from '../hooks/usePageMeta';
+import { useOverlayA11y } from '../hooks/useOverlayA11y';
 import { useCart } from '../context/CartContext';
 import styles from './CandlePricingPage.module.css';
 
 const CandlePricingPage = () => {
   const navigate = useNavigate();
   const { addItem } = useCart();
-  const [selectedId, setSelectedId] = useState(null);
-  const [candles, setCandles] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [errorMsg, setErrorMsg] = useState(null);
+  const [selectedId, setSelectedId] = React.useState(null);
+  const [candles, setCandles] = React.useState(STORE_CANDLE_PRICES);
+  const modalRef = React.useRef(null);
+  const closeButtonRef = React.useRef(null);
+  const closeDetails = React.useCallback(() => setSelectedId(null), []);
 
-  // Fetch candles from Supabase on mount
-  useEffect(() => {
+  React.useEffect(() => {
+    if (!supabase || import.meta.env.MODE === 'test') {
+      return undefined;
+    }
+
+    let ignore = false;
+
     const fetchCandles = async () => {
-      // Prevent crash if env variables were not injected by Vite/Vercel
-      if (!supabase) {
-        console.error('Supabase client not initialized. Check VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY environment variables.');
-        setErrorMsg('Database configuration missing. Please check Vercel environment variables.');
-        setIsLoading(false);
-        return;
-      }
-
       const { data, error } = await supabase
         .from('products')
         .select('*')
         .order('name');
-      
-      if (error) {
-        console.error('Error fetching candles:', error);
-        setErrorMsg(`Failed to load catalog: ${error.message}`);
-      } else {
-        setCandles(data || []);
+
+      if (ignore) {
+        return;
       }
-      setIsLoading(false);
+
+      if (error) {
+        if (import.meta.env.DEV) {
+          console.warn('Falling back to local candle catalog because the remote fetch failed.', error);
+        }
+        return;
+      }
+
+      const remoteCandles = (data || []).map(normalizeCandleRecord).filter(Boolean);
+      if (remoteCandles.length > 0) {
+        setCandles(remoteCandles);
+      }
     };
 
     fetchCandles();
+
+    return () => {
+      ignore = true;
+    };
   }, []);
 
   const selectedItem = candles.find((item) => item.id === selectedId) ?? null;
+
+  useOverlayA11y({
+    isOpen: Boolean(selectedItem),
+    containerRef: modalRef,
+    initialFocusRef: closeButtonRef,
+    onClose: closeDetails,
+  });
 
   usePageMeta({
     title: 'In-Store Candle Prices | Romazen',
     description: 'Scan-ready in-store Romazen candle pricing, sizes, and scent notes.',
   });
-
-  if (isLoading) {
-    return (
-      <Layout>
-        <section className={styles.page}>
-          <div className="container">
-            <div className={styles.header}>
-              <h1 className={styles.title}>Loading Prices...</h1>
-            </div>
-          </div>
-        </section>
-      </Layout>
-    );
-  }
-
-  if (errorMsg) {
-    return (
-      <Layout>
-        <section className={styles.page}>
-          <div className="container">
-            <div className={styles.header}>
-              <h1 className={styles.title}>Error</h1>
-              <p className={styles.subtitle} style={{ color: 'var(--out-of-stock, #7f1d1d)', marginTop: '1rem' }}>
-                {errorMsg}
-              </p>
-            </div>
-          </div>
-        </section>
-      </Layout>
-    );
-  }
 
   return (
     <Layout>
@@ -134,18 +122,21 @@ const CandlePricingPage = () => {
           </div>
 
           {selectedItem && (
-            <div className={styles.modalOverlay} onClick={() => setSelectedId(null)}>
+            <div className={styles.modalOverlay} onClick={closeDetails}>
               <div
+                ref={modalRef}
                 className={styles.modalCard}
                 onClick={(event) => event.stopPropagation()}
                 role="dialog"
                 aria-modal="true"
-                aria-label={`${selectedItem.name} details`}
+                aria-labelledby="candle-details-title"
+                tabIndex={-1}
               >
                 <button
+                  ref={closeButtonRef}
                   type="button"
                   className={styles.closeButton}
-                  onClick={() => setSelectedId(null)}
+                  onClick={closeDetails}
                   aria-label="Close details"
                 >
                   Close
@@ -162,7 +153,7 @@ const CandlePricingPage = () => {
                 )}
 
                 <div className={styles.top}>
-                  <h2 className={styles.name}>{selectedItem.name}</h2>
+                  <h2 id="candle-details-title" className={styles.name}>{selectedItem.name}</h2>
                   <span className={styles.price}>{selectedItem.price}</span>
                 </div>
                 <p className={styles.meta}>{selectedItem.size} · {selectedItem.burnTime}</p>
@@ -178,7 +169,7 @@ const CandlePricingPage = () => {
                         disabled={!selectedItem.inStock}
                         onClick={() => {
                             addItem(selectedItem);
-                            setSelectedId(null);
+                            closeDetails();
                         }}
                     >
                         {selectedItem.inStock ? 'Add to Cart' : 'Unavailable'}

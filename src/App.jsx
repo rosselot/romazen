@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Navigate, Routes, Route, useLocation } from 'react-router-dom';
 import Home from './pages/Home';
 import CollectionPage from './pages/CollectionPage';
 import BasicPage from './pages/BasicPage';
@@ -27,7 +27,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/prices" element={<CandlePricingPage />} />
-        <Route path="/scan" element={<CandlePricingPage />} />
+        <Route path="/scan" element={<Navigate to="/prices" replace />} />
         <Route
           path="/shop"
           element={
