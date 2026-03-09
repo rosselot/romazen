@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@stripe/stripe-js": "^8.9.0",
+    "@supabase/supabase-js": "^2.98.0",
     "classnames": "^2.5.1",
     "framer-motion": "^12.23.26",
     "lucide-react": "^0.562.0",
