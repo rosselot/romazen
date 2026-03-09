@@ -15,10 +15,9 @@ describe('App routing UI', () => {
     expect(screen.getByRole('heading', { name: /elegance in every breath/i })).toBeInTheDocument();
   });
 
-  it('renders filtered candles collection on /candles', async () => {
+  it('renders filtered candles collection on /candles', () => {
     renderWithRoute('/candles');
-    // Initially shows loading state while checking Supabase or error state
-    expect(screen.getByRole('heading', { name: /loading catalog/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /luxury soy candles/i })).toBeInTheDocument();
   });
 
   it('renders QR candle pricing page on /prices', async () => {
