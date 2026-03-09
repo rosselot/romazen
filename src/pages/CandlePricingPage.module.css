@@ -187,5 +187,16 @@
   .footer {
     flex-direction: column;
     align-items: flex-start;
+    gap: 20px;
+  }
+
+  .actions {
+    flex-direction: column;
+    width: 100%;
+    gap: 12px;
+  }
+
+  .actions button {
+    width: 100%;
   }
 }
