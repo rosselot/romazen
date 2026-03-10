@@ -90,7 +90,7 @@ const AdminPage = () => {
 
     if (error) {
       console.error('Error updating stock:', error);
-      alert('Failed to update stock. Please try again.');
+      alert('Failed to update stock: ' + error.message + ' ' + (error.details || ''));
     } else {
       // Optimistically update the UI
       setCandles((prevCandles) =>
