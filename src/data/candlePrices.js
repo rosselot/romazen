@@ -57,7 +57,7 @@ export const normalizeCandleRecord = (record) => {
     burnTime: record.burnTime ?? record.burn_time ?? record.burnTimeHours ?? 'Approx. 50 hrs',
     price: formatPrice(record.price),
     notes: record.notes ?? record.scent_notes ?? record.scentNotes ?? record.description ?? 'Seasonal scent notes',
-    image: record.image ?? record.image_url ?? record.imageUrl ?? '/assets/images/hero-bg.png',
+    image: record.image ?? record.image_url ?? record.imageUrl ?? '/assets/images/Living-Family.png',
     inStock: parseStock(record.inStock ?? record.in_stock ?? record.available, true),
     details: record.details ?? record.long_description ?? record.description ?? null,
     description: record.description ?? record.details ?? record.long_description ?? null,
