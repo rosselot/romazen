@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import CollectionPage from './pages/CollectionPage';
 import BasicPage from './pages/BasicPage';
 import CandlePricingPage from './pages/CandlePricingPage';
+import AdminPage from './pages/AdminPage';
 import { CartProvider } from './context/CartContext';
 import CartDrawer from './components/Cart/CartDrawer';
 
@@ -28,6 +29,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/prices" element={<CandlePricingPage />} />
         <Route path="/scan" element={<Navigate to="/prices" replace />} />
+        <Route path="/admin" element={<AdminPage />} />
         <Route
           path="/shop"
           element={

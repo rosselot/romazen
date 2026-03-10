@@ -55,3 +55,25 @@
     padding: 18px 48px;
     font-size: 14px;
 }
+
+.dark {
+    background: var(--onyx-black);
+    color: var(--soft-ivory);
+    border-color: var(--onyx-black);
+}
+
+.dark:hover {
+    background: transparent;
+    color: var(--onyx-black);
+}
+
+.outlineDark {
+    background: transparent;
+    border-color: var(--onyx-black);
+    color: var(--onyx-black);
+}
+
+.outlineDark:hover {
+    background: var(--onyx-black);
+    color: var(--soft-ivory);
+}
