@@ -10,6 +10,16 @@
     border: 1px solid transparent;
     cursor: pointer;
     transition: var(--transition-smooth);
+    min-height: 44px;
+}
+
+.button:disabled {
+    opacity: 0.58;
+    cursor: not-allowed;
+}
+
+.button:disabled:hover {
+    transform: none;
 }
 
 .button:focus-visible {

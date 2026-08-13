@@ -1,5 +1,7 @@
 import { useEffect } from 'react';
 
+const PUBLIC_ORIGIN = 'https://www.romazen.com';
+
 const ensureMetaTag = (attr, key, value) => {
   let tag = document.head.querySelector(`meta[${attr}="${key}"]`);
   if (!tag) {
@@ -12,6 +14,10 @@ const ensureMetaTag = (attr, key, value) => {
 
 const ensureCanonicalTag = (href) => {
   let tag = document.head.querySelector('link[rel="canonical"]');
+  if (!href) {
+    tag?.remove();
+    return;
+  }
   if (!tag) {
     tag = document.createElement('link');
     tag.setAttribute('rel', 'canonical');
@@ -24,9 +30,8 @@ export const usePageMeta = ({ title, description, noIndex = false }) => {
   useEffect(() => {
     document.title = title;
 
-    const origin = window.location.origin;
-    const canonicalUrl = `${origin}${window.location.pathname}`;
-    const imageUrl = `${origin}/assets/images/hero-bg.png`;
+    const canonicalUrl = `${PUBLIC_ORIGIN}${window.location.pathname}`;
+    const imageUrl = `${PUBLIC_ORIGIN}/og.png`;
 
     ensureMetaTag('name', 'description', description);
     ensureMetaTag('name', 'robots', noIndex ? 'noindex,nofollow' : 'index,follow');
@@ -36,10 +41,12 @@ export const usePageMeta = ({ title, description, noIndex = false }) => {
     ensureMetaTag('property', 'og:description', description);
     ensureMetaTag('property', 'og:url', canonicalUrl);
     ensureMetaTag('property', 'og:image', imageUrl);
+    ensureMetaTag('property', 'og:image:width', '1731');
+    ensureMetaTag('property', 'og:image:height', '909');
     ensureMetaTag('name', 'twitter:card', 'summary_large_image');
     ensureMetaTag('name', 'twitter:title', title);
     ensureMetaTag('name', 'twitter:description', description);
     ensureMetaTag('name', 'twitter:image', imageUrl);
-    ensureCanonicalTag(canonicalUrl);
+    ensureCanonicalTag(noIndex ? null : canonicalUrl);
   }, [title, description, noIndex]);
 };

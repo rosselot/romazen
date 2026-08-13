@@ -1,6 +1,5 @@
 import React from 'react';
 import styles from './SustainabilitySection.module.css';
-import { motion } from 'framer-motion';
 import { Leaf, Recycle, Heart } from 'lucide-react';
 
 const SustainabilitySection = () => {
@@ -8,7 +7,7 @@ const SustainabilitySection = () => {
         {
             icon: <Leaf size={32} />,
             title: 'Clean Ingredients',
-            description: '100% natural soy wax and therapeutic-grade essential oils.'
+            description: '100% natural soy wax with a refined Gardenia & Jasmine fragrance composition.'
         },
         {
             icon: <Recycle size={32} />,
@@ -25,20 +24,14 @@ const SustainabilitySection = () => {
     return (
         <section className={styles.section}>
             <div className="container">
+                <h2 className="srOnly">Our values</h2>
                 <div className={styles.grid}>
-                    {values.map((value, index) => (
-                        <motion.div
-                            key={index}
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: index * 0.2 }}
-                            className={styles.card}
-                        >
+                    {values.map((value) => (
+                        <article key={value.title} className={styles.card}>
                             <div className={styles.icon}>{value.icon}</div>
                             <h3 className={styles.title}>{value.title}</h3>
                             <p className={styles.text}>{value.description}</p>
-                        </motion.div>
+                        </article>
                     ))}
                 </div>
             </div>

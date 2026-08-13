@@ -40,13 +40,15 @@ const main = async () => {
     }),
   );
 
-  const oversized = rows
+  const optimizedRows = rows.filter((row) => row.file.includes('/optimized/'));
+  const auditedRows = strict && optimizedRows.length > 0 ? optimizedRows : rows;
+  const oversized = auditedRows
     .filter((row) => row.bytes > thresholdKb * 1024)
     .sort((a, b) => b.bytes - a.bytes);
 
-  const totalBytes = rows.reduce((sum, row) => sum + row.bytes, 0);
+  const totalBytes = auditedRows.reduce((sum, row) => sum + row.bytes, 0);
 
-  console.log(`Image audit: ${rows.length} files, total ${(totalBytes / (1024 * 1024)).toFixed(2)}MB`);
+  console.log(`Image audit: ${auditedRows.length} delivered files, total ${(totalBytes / (1024 * 1024)).toFixed(2)}MB`);
   console.log(`Threshold: ${thresholdKb}KB`);
 
   if (oversized.length === 0) {

@@ -18,6 +18,8 @@ const requiredRoutes = [
   '/privacy',
   '/terms',
   '/scan',
+  '/checkout/success',
+  '/checkout/cancelled',
 ];
 
 test('app declares required routes', async () => {

@@ -24,5 +24,8 @@ dist-ssr
 *.sw?
 
 tmp/
+.playwright-cli/
+graphify-out/
+output/
 
 .env

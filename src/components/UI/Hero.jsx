@@ -1,7 +1,6 @@
 import React from 'react';
 import styles from './Hero.module.css';
 import Button from './Button';
-import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 
 const Hero = () => {
@@ -11,51 +10,30 @@ const Hero = () => {
         <section className={styles.hero}>
             <div className={styles.overlay}></div>
             <div className={styles.content}>
-                <motion.span
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8 }}
-                    className={styles.eyebrow}
-                >
-                    Established in NYC
-                </motion.span>
+                <span className={styles.eyebrow}>
+                    The Four Forms · New York
+                </span>
 
-                <motion.h1
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, delay: 0.2 }}
-                    className={styles.headline}
-                >
-                    Elegance in <br /> Every Breath.
-                </motion.h1>
+                <h1 className={styles.headline}>
+                    Roman Form. <br /> Modern Calm.
+                </h1>
 
-                <motion.p
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, delay: 0.4 }}
-                    className={styles.subheadline}
-                >
-                    Premium handcrafted candles, soaps, and home fragrances <br />
-                    inspired by the rhythm of New York.
-                </motion.p>
+                <p className={styles.subheadline}>
+                    Sculptural soy candles in a luminous Gardenia &amp; Jasmine aroma, <br />
+                    hand-poured in four architectural forms.
+                </p>
 
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, delay: 0.6 }}
-                    className={styles.cta}
-                >
-                    <Button variant="primary" size="large" onClick={() => navigate('/shop')}>Shop Collection</Button>
-                    <Button variant="secondary" size="large" onClick={() => navigate('/about')}>Discover Romazen</Button>
-                </motion.div>
+                <div className={styles.cta}>
+                    <Button variant="primary" size="large" onClick={() => navigate('/prices')}>Shop the Four Forms</Button>
+                    <Button variant="secondary" size="large" onClick={() => navigate('/about')}>Discover the Scent</Button>
+                </div>
             </div>
 
-            <motion.div
-                initial={{ scale: 1.1 }}
-                animate={{ scale: 1 }}
-                transition={{ duration: 2, ease: "easeOut" }}
-                className={styles.backgroundImage}
-            />
+            <picture className={styles.backgroundImage} aria-hidden="true">
+                <source type="image/avif" srcSet="/assets/images/optimized/hero-bg-480.avif 480w, /assets/images/optimized/hero-bg.avif 959w" sizes="100vw" />
+                <source type="image/webp" srcSet="/assets/images/optimized/hero-bg-480.webp 480w, /assets/images/optimized/hero-bg.webp 959w" sizes="100vw" />
+                <img src="/assets/images/optimized/hero-bg.webp" alt="" fetchPriority="high" decoding="async" />
+            </picture>
         </section>
     );
 };

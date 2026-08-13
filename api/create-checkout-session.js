@@ -1,20 +1,27 @@
 /* global process */
+import { randomUUID } from 'node:crypto';
 import Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
-import { STORE_CANDLE_PRICES, normalizeCandleRecord } from '../src/data/candlePrices.js';
+import { normalizeCandleRecord } from '../src/data/candlePrices.js';
+import {
+  STANDARD_SHIPPING_CENTS,
+  applyBundleDiscountToUnitAmount,
+  getBundleDiscountBps,
+  qualifiesForFreeShipping,
+} from '../src/data/commerce.js';
+import { getSiteUrl, parseUnitAmount, sendError, validateCart } from './_commerce.js';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-
-let supabaseUrl = (process.env.VITE_SUPABASE_URL || '').replace(/['"]/g, '').trim();
-let supabaseAnonKey = (process.env.VITE_SUPABASE_ANON_KEY || '').replace(/['"]/g, '').trim();
+let supabaseUrl = (process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || '').replace(/['"]/g, '').trim();
+const supabaseKey = (
+  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY || ''
+).replace(/['"]/g, '').trim();
 
 if (supabaseUrl && !supabaseUrl.startsWith('http')) {
   supabaseUrl = `https://${supabaseUrl}`;
 }
 
-// Initialize Supabase client only if vars exist
-const supabase = supabaseUrl && supabaseAnonKey
-  ? createClient(supabaseUrl, supabaseAnonKey)
+const supabase = supabaseUrl && supabaseKey
+  ? createClient(supabaseUrl, supabaseKey, { auth: { persistSession: false } })
   : null;
 
 const buildCatalogMap = (items) =>
@@ -26,60 +33,107 @@ const buildCatalogMap = (items) =>
   );
 
 export default async function handler(req, res) {
+  const requestId = randomUUID();
+
   if (req.method !== 'POST') {
-    return res.status(405).json({ message: 'Method Not Allowed' });
+    res.setHeader?.('Allow', 'POST');
+    return sendError(res, 405, { code: 'method_not_allowed', message: 'Method not allowed.' }, requestId);
+  }
+
+  const validated = validateCart(req.body);
+  if (validated.error) return sendError(res, 400, validated.error, requestId);
+
+  const siteUrl = getSiteUrl();
+  if (!siteUrl || !supabase || !process.env.STRIPE_SECRET_KEY) {
+    return sendError(res, 503, {
+      code: 'checkout_unavailable',
+      message: 'Online checkout is temporarily unavailable. Your cart has been saved.',
+    }, requestId);
   }
 
   try {
-    const { items } = req.body;
+    const requestedIds = validated.items.map((item) => item.id);
+    let query = supabase.from('products').select('*').in('id', requestedIds);
+    if (typeof AbortSignal?.timeout === 'function') query = query.abortSignal(AbortSignal.timeout(6000));
+    const { data: dbProducts, error } = await query;
 
-    const fallbackCatalog = buildCatalogMap(STORE_CANDLE_PRICES);
-    const requestedIds = items.map((item) => String(item.id));
-    const catalog = new Map(fallbackCatalog);
-
-    if (supabase) {
-      const { data: dbProducts, error } = await supabase
-        .from('products')
-        .select('*')
-        .in('id', requestedIds);
-
-      if (!error && dbProducts) {
-        buildCatalogMap(dbProducts).forEach((value, key) => {
-          catalog.set(key, value);
-        });
-      } else if (error) {
-        console.warn('Falling back to local candle catalog for checkout.', error.message);
-      }
+    if (error || !dbProducts) {
+      console.error('Catalog lookup failed', { requestId, code: error?.code || 'unknown' });
+      return sendError(res, 503, {
+        code: 'catalog_unavailable',
+        message: 'We cannot verify current prices and availability. Please try again shortly.',
+      }, requestId);
     }
 
-    // Validate and format items for Stripe Checkout
-    const lineItems = items.map((item) => {
-      // Find the authoritative product on the server (prevent client price manipulation)
-      const serverProduct = catalog.get(String(item.id));
-      
+    const catalog = buildCatalogMap(dbProducts);
+    const lineItems = [];
+    const totalQuantity = validated.items.reduce((total, item) => total + item.quantity, 0);
+    const bundleDiscountBps = getBundleDiscountBps(totalQuantity);
+    let checkoutSubtotalCents = 0;
+
+    for (const item of validated.items) {
+      const serverProduct = catalog.get(item.id);
+
       if (!serverProduct) {
-         throw new Error(`Product ${item.id} not found.`);
+        return sendError(res, 422, {
+          code: 'product_unavailable',
+          message: 'An item in your cart is no longer available.',
+          itemId: item.id,
+        }, requestId);
       }
 
-      // Format price correctly to cents
-      const unitAmount = Math.round(Number.parseFloat(serverProduct.price.replace(/[^0-9.]/g, '')) * 100);
-      const siteUrl = process.env.SITE_URL || req.headers.origin || 'http://localhost:4173';
+      if (!serverProduct.inStock) {
+        return sendError(res, 409, {
+          code: 'out_of_stock',
+          message: `${serverProduct.name} is currently sold out.`,
+          itemId: item.id,
+        }, requestId);
+      }
 
-      return {
+      if (serverProduct.stockCount !== null && item.quantity > serverProduct.stockCount) {
+        return sendError(res, 409, {
+          code: 'insufficient_stock',
+          message: `Only ${serverProduct.stockCount} ${serverProduct.name} available.`,
+          itemId: item.id,
+          availableQuantity: serverProduct.stockCount,
+        }, requestId);
+      }
+
+      const unitAmount = parseUnitAmount(serverProduct.price);
+      if (!unitAmount) {
+        return sendError(res, 422, {
+          code: 'invalid_catalog_price',
+          message: 'An item cannot be purchased online right now.',
+          itemId: item.id,
+        }, requestId);
+      }
+      const discountedUnitAmount = applyBundleDiscountToUnitAmount(unitAmount, totalQuantity);
+      checkoutSubtotalCents += discountedUnitAmount * item.quantity;
+
+      let imageUrl;
+      try {
+        imageUrl = serverProduct.image ? new URL(serverProduct.image, siteUrl).toString() : null;
+      } catch {
+        imageUrl = null;
+      }
+
+      lineItems.push({
         price_data: {
           currency: 'usd',
           product_data: {
             name: serverProduct.name,
-            images: serverProduct.image ? [new URL(serverProduct.image, siteUrl).toString()] : [],
+            images: imageUrl ? [imageUrl] : [],
             description: serverProduct.description || serverProduct.notes,
           },
-          unit_amount: unitAmount,
+          unit_amount: discountedUnitAmount,
         },
         quantity: item.quantity,
-      };
-    });
+      });
+    }
 
-    // Create Stripe Checkout Session
+    const freeShipping = qualifiesForFreeShipping(checkoutSubtotalCents);
+
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: lineItems,
@@ -91,8 +145,8 @@ export default async function handler(req, res) {
         {
           shipping_rate_data: {
             type: 'fixed_amount',
-            fixed_amount: { amount: 500, currency: 'usd' },
-            display_name: 'Standard Shipping',
+            fixed_amount: { amount: freeShipping ? 0 : STANDARD_SHIPPING_CENTS, currency: 'usd' },
+            display_name: freeShipping ? 'Complimentary Standard Shipping' : 'Standard Shipping',
             delivery_estimate: {
               minimum: { unit: 'business_day', value: 3 },
               maximum: { unit: 'business_day', value: 5 },
@@ -100,14 +154,21 @@ export default async function handler(req, res) {
           },
         },
       ],
-      // Redirects based on success/cancellation
-      success_url: `${req.headers.origin || 'http://localhost:4173'}?checkout=success`,
-      cancel_url: `${req.headers.origin || 'http://localhost:4173'}?checkout=cancelled`,
+      success_url: `${siteUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${siteUrl}/checkout/cancelled`,
+      metadata: {
+        request_id: requestId,
+        bundle_discount_bps: String(bundleDiscountBps),
+        free_standard_shipping: String(freeShipping),
+      },
     });
 
-    res.status(200).json({ url: session.url });
+    return res.status(200).json({ url: session.url, requestId });
   } catch (error) {
-    console.error('Stripe Checkout Session Error:', error);
-    res.status(500).json({ error: error.message });
+    console.error('Checkout session creation failed', { requestId, type: error?.type || error?.name });
+    return sendError(res, 502, {
+      code: 'checkout_provider_error',
+      message: 'Checkout could not be started. Your cart has been saved; please try again.',
+    }, requestId);
   }
 }

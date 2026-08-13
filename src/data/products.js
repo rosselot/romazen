@@ -1,12 +1,13 @@
 export const PRODUCTS = [
     {
         id: 'core-candle-collection',
-        name: 'Core Candle Collection',
-        category: 'Luxury Soy Candles',
-        price: 'From $45.00',
-        description: 'Discover our signature line of hand-poured soy candles. Available in various sizes and curated scents.',
-        notes: 'Explore all scents & sizes',
-        image: '/assets/images/product-candle.png',
+        name: 'The Four Forms Candle Collection',
+        category: 'Sculptural Soy Candles',
+        price: 'From $38.00',
+        description: 'One luminous white-floral aroma, hand-poured in four architectural glass forms.',
+        notes: 'Gardenia · Jasmine',
+        image: '/assets/images/romazen-limited-four-sizes.jpeg',
+        imageWidth: 1122,
         inStock: true,
         isCandle: true
     },
@@ -18,6 +19,7 @@ export const PRODUCTS = [
         description: 'A crisp, botanical moisturizing hand soap inspired by the hidden gardens of the West Village.',
         notes: 'Wild Fig, Cedarwood, Green Leaves',
         image: '/assets/images/product-soap.png',
+        imageWidth: 1024,
         inStock: false
     },
     {
@@ -28,6 +30,7 @@ export const PRODUCTS = [
         description: 'A delicate room mist that transforms your living space into a sanctuary of calm.',
         notes: 'Sandalwood, White Silk, Vanilla',
         image: '/assets/images/product-diffuser.png',
+        imageWidth: 1024,
         inStock: false
     },
     {
@@ -38,6 +41,7 @@ export const PRODUCTS = [
         description: 'An eco-friendly multi-surface cleaner with a high-end fragrance profile for a spotless home.',
         notes: 'White Tea, Sage, Lemon Zest',
         image: '/assets/images/product-cleaner.png',
+        imageWidth: 1024,
         inStock: false
     }
 ];

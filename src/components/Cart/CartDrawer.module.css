@@ -50,6 +50,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 44px;
+  height: 44px;
   padding: 0.5rem;
   border-radius: 999px;
   transition: opacity 0.2s ease;
@@ -90,6 +92,11 @@
   gap: 1rem;
 }
 
+.item > picture {
+  width: 80px;
+  flex: 0 0 80px;
+}
+
 .itemImage {
   width: 80px;
   height: 100px;
@@ -123,6 +130,8 @@
   border: none;
   color: var(--smoke-gray);
   cursor: pointer;
+  width: 44px;
+  height: 44px;
   padding: 0.25rem;
   transition: color 0.2s ease;
 }
@@ -156,6 +165,8 @@
   background: none;
   border: none;
   cursor: pointer;
+  width: 44px;
+  height: 44px;
   padding: 0.5rem;
   color: var(--onyx-black);
   display: flex;
@@ -180,6 +191,35 @@
   background-color: rgba(252, 248, 242, 0.94);
 }
 
+.shippingMeter {
+  margin-bottom: 1rem;
+  padding: 12px;
+  background: rgba(212, 175, 55, 0.1);
+  border: 1px solid rgba(122, 90, 23, 0.22);
+}
+
+.shippingMeter p {
+  margin-bottom: 8px;
+  color: #5f4716;
+  font-size: 0.76rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.progressTrack {
+  width: 100%;
+  height: 5px;
+  overflow: hidden;
+  background: rgba(18, 18, 18, 0.12);
+}
+
+.progressTrack span {
+  display: block;
+  height: 100%;
+  background: #a88123;
+  transition: width 0.25s ease;
+}
+
 .summaryRow {
   display: flex;
   justify-content: space-between;
@@ -189,10 +229,60 @@
   color: var(--onyx-black);
 }
 
+.savingsRow,
+.orderTotalRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.45rem;
+  font-size: 0.85rem;
+}
+
+.savingsRow {
+  color: #31522c;
+}
+
+.orderTotalRow {
+  padding-top: 0.7rem;
+  border-top: 1px solid rgba(18, 18, 18, 0.08);
+  color: var(--onyx-black);
+}
+
+.orderTotalRow strong {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  font-weight: 500;
+}
+
 .taxNotice {
   font-size: 0.875rem;
   color: var(--smoke-gray);
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.policyNotice,
+.checkoutError {
+  min-height: 1.4em;
+  margin-bottom: 0.75rem;
+  color: #4f5d6a;
+  font-size: 0.75rem;
+  line-height: 1.45;
+}
+
+.policyNotice a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.checkoutError {
+  color: #8a1c1c;
+}
+
+.closeButton:focus-visible,
+.removeButton:focus-visible,
+.quantityControls button:focus-visible {
+  outline: 2px solid var(--champagne-gold);
+  outline-offset: 2px;
 }
 
 .checkoutButton {

@@ -19,3 +19,12 @@ test('image audit exits zero for very high threshold', () => {
   assert.equal(result.status, 0);
   assert.match(result.stdout, /No oversized images found\./);
 });
+
+test('delivered responsive images pass the 200KB budget', () => {
+  const result = spawnSync('node', ['scripts/image-audit.mjs', '--threshold-kb=200', '--strict'], {
+    encoding: 'utf8',
+  });
+
+  assert.equal(result.status, 0);
+  assert.match(result.stdout, /No oversized images found\./);
+});

@@ -9,8 +9,8 @@ import { usePageMeta } from '../hooks/usePageMeta';
 
 const Home = () => {
     usePageMeta({
-        title: 'Romazen | Elegance in Every Breath',
-        description: 'Discover Romazen handcrafted candles, soaps, and home fragrances inspired by New York.'
+        title: 'RomaZen | The Four Forms in Gardenia & Jasmine',
+        description: 'Discover RomaZen sculptural soy candles in four architectural forms, scented with luminous gardenia and soft jasmine.'
     });
 
     return (

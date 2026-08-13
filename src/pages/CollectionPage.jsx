@@ -28,6 +28,7 @@ const CollectionPage = ({
                 subheading={subheading}
                 showFooterCta={false}
                 isLoading={false}
+                headingLevel="h1"
             />
         </Layout>
     );

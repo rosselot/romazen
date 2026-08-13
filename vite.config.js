@@ -15,6 +15,8 @@ function vercelApiProxy() {
       server.middlewares.use(async (req, res, next) => {
         if (req.url.startsWith('/api/')) {
           try {
+            const requestUrl = new URL(req.url, 'http://localhost');
+            req.query = Object.fromEntries(requestUrl.searchParams);
             // Read body
             let body = '';
             await new Promise((resolve) => {
@@ -31,7 +33,7 @@ function vercelApiProxy() {
             }
 
             // Dynamically import the handler to get fresh code
-            const modulePath = resolve(process.cwd(), `.${req.url.split('?')[0]}.js`);
+            const modulePath = resolve(process.cwd(), `.${requestUrl.pathname}.js`);
             const handler = await import(`${modulePath}?t=${Date.now()}`);
             
             // Add basic status and json helpers that Vercel provides

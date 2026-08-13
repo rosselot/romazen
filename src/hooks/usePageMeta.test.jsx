@@ -20,13 +20,11 @@ describe('usePageMeta', () => {
       />,
     );
 
-    const origin = window.location.origin;
-
     expect(document.title).toBe('Privacy Policy | Romazen');
-    expect(getCanonical()).toBe(`${origin}/privacy`);
+    expect(getCanonical()).toBe('https://www.romazen.com/privacy');
     expect(getMeta('name', 'robots')).toBe('index,follow');
     expect(getMeta('property', 'og:title')).toBe('Privacy Policy | Romazen');
-    expect(getMeta('property', 'og:url')).toBe(`${origin}/privacy`);
+    expect(getMeta('property', 'og:url')).toBe('https://www.romazen.com/privacy');
     expect(getMeta('name', 'twitter:title')).toBe('Privacy Policy | Romazen');
     expect(getMeta('name', 'description')).toBe(
       'Read the Romazen privacy policy and how personal information is handled.',
@@ -44,9 +42,7 @@ describe('usePageMeta', () => {
       />,
     );
 
-    const origin = window.location.origin;
-
     expect(getMeta('name', 'robots')).toBe('noindex,nofollow');
-    expect(getCanonical()).toBe(`${origin}/missing-page`);
+    expect(getCanonical()).toBeUndefined();
   });
 });

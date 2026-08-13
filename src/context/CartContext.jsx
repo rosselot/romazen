@@ -1,4 +1,12 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import {
+  getCartTotal,
+  CART_VERSION,
+  MAX_ITEM_QUANTITY,
+  readStoredCart,
+  sanitizeCartItems,
+  serializeCart,
+} from '../utils/cart';
 
 const CartContext = createContext();
 
@@ -6,29 +14,53 @@ const CartContext = createContext();
 export const useCart = () => useContext(CartContext);
 
 export const CartProvider = ({ children }) => {
-  const [items, setItems] = useState(() => {
-    // Load initial cart from localStorage if available
-    const saved = localStorage.getItem('romazen_cart');
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [items, setItems] = useState(() => readStoredCart(localStorage));
   
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  // Persist to localStorage whenever cart changes
   useEffect(() => {
-    localStorage.setItem('romazen_cart', JSON.stringify(items));
+    localStorage.setItem('romazen_cart', serializeCart(items));
   }, [items]);
 
   const addItem = (product) => {
+    const [safeProduct] = sanitizeCartItems([{ ...product, quantity: 1 }]);
+    if (!safeProduct || product.inStock === false) return;
+
     setItems((prevItems) => {
-      const existing = prevItems.find((item) => item.id === product.id);
+      const existing = prevItems.find((item) => item.id === safeProduct.id);
       if (existing) {
         return prevItems.map((item) =>
-          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+          item.id === safeProduct.id
+            ? { ...item, quantity: Math.min(item.quantity + 1, MAX_ITEM_QUANTITY) }
+            : item
         );
       }
-      return [...prevItems, { ...product, quantity: 1 }];
+      return [...prevItems, safeProduct];
     });
+    setIsDrawerOpen(true);
+  };
+
+  const addItems = (products) => {
+    const safeProducts = sanitizeCartItems({
+      version: CART_VERSION,
+      items: products
+        .filter((product) => product.inStock !== false)
+        .map((product) => ({ ...product, quantity: 1 })),
+    });
+
+    if (safeProducts.length === 0) return;
+
+    setItems((prevItems) => safeProducts.reduce((nextItems, product) => {
+      const existing = nextItems.find((item) => item.id === product.id);
+      if (existing) {
+        return nextItems.map((item) => (
+          item.id === product.id
+            ? { ...item, quantity: Math.min(item.quantity + 1, MAX_ITEM_QUANTITY) }
+            : item
+        ));
+      }
+      return [...nextItems, product];
+    }, prevItems));
     setIsDrawerOpen(true);
   };
 
@@ -37,24 +69,22 @@ export const CartProvider = ({ children }) => {
   };
 
   const updateQuantity = (id, quantity) => {
-    if (quantity < 1) {
+    if (!Number.isInteger(quantity) || quantity < 1) {
       removeItem(id);
       return;
     }
     setItems((prevItems) =>
-      prevItems.map((item) => (item.id === id ? { ...item, quantity } : item))
+      prevItems.map((item) => (
+        item.id === id ? { ...item, quantity: Math.min(quantity, MAX_ITEM_QUANTITY) } : item
+      ))
     );
   };
 
-  const clearCart = () => {
+  const clearCart = React.useCallback(() => {
     setItems([]);
-  };
+  }, []);
 
-  const cartTotal = items.reduce((total, item) => {
-    // Remove '$' and convert to float
-    const price = parseFloat(item.price.replace(/[^0-9.]/g, ''));
-    return total + price * item.quantity;
-  }, 0);
+  const cartTotal = getCartTotal(items);
 
   const cartCount = items.reduce((count, item) => count + item.quantity, 0);
 
@@ -63,6 +93,7 @@ export const CartProvider = ({ children }) => {
       value={{
         items,
         addItem,
+        addItems,
         removeItem,
         updateQuantity,
         clearCart,

@@ -5,6 +5,8 @@ import { Instagram, Menu, X, ShoppingBag } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { INSTAGRAM_URL } from '../../data/social';
 import { useCart } from '../../context/CartContext';
+import { useOverlayA11y } from '../../hooks/useOverlayA11y';
+import { FREE_SHIPPING_THRESHOLD } from '../../data/commerce';
 
 const Navbar = () => {
     const location = useLocation();
@@ -13,6 +15,15 @@ const Navbar = () => {
     const [scrolled, setScrolled] = useState(false);
     const { cartCount, setIsDrawerOpen } = useCart();
     const isOpen = menuPath === location.pathname;
+    const menuRef = React.useRef(null);
+    const closeMenu = React.useCallback(() => setMenuPath(null), []);
+
+    useOverlayA11y({
+        isOpen,
+        containerRef: menuRef,
+        initialFocusRef: null,
+        onClose: closeMenu,
+    });
 
     useEffect(() => {
         const handleScroll = () => {
@@ -23,7 +34,7 @@ const Navbar = () => {
     }, []);
 
     const navLinks = [
-        { name: 'Candle Prices', path: '/prices' },
+        { name: 'The Four Forms', path: '/prices' },
         { name: 'Shop All', path: '/shop' },
         { name: 'Candles', path: '/candles' },
         { name: 'About', path: '/about' },
@@ -33,24 +44,33 @@ const Navbar = () => {
 
     return (
         <nav className={`${styles.navbar} ${useScrolledStyle ? styles.scrolled : ''}`}>
+            <p className={styles.announcement}>
+                Complimentary standard shipping on orders ${FREE_SHIPPING_THRESHOLD}+
+            </p>
             <div className={styles.container}>
                 <button
                     type="button"
                     aria-label={isOpen ? 'Close navigation menu' : 'Open navigation menu'}
                     aria-expanded={isOpen}
+                    aria-controls="mobile-navigation"
                     className={styles.menuButton}
                     onClick={() => setMenuPath(isOpen ? null : location.pathname)}
                 >
                     {isOpen ? <X size={24} /> : <Menu size={24} />}
                 </button>
 
-                <Link to="/" className={styles.logo} onClick={() => setMenuPath(null)}>
+                <Link to="/" className={styles.logo} onClick={closeMenu} aria-label="Romazen home">
                     ROMAZEN
                 </Link>
 
                 <div className={styles.desktopLinks}>
                     {navLinks.map((link) => (
-                        <Link key={link.name} to={link.path} className={styles.link}>
+                        <Link
+                            key={link.name}
+                            to={link.path}
+                            className={styles.link}
+                            aria-current={location.pathname === link.path ? 'page' : undefined}
+                        >
                             {link.name}
                         </Link>
                     ))}
@@ -83,17 +103,24 @@ const Navbar = () => {
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
+                        id="mobile-navigation"
+                        ref={menuRef}
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                         className={styles.mobileMenu}
+                        role="dialog"
+                        aria-modal="true"
+                        aria-label="Navigation menu"
+                        tabIndex={-1}
                     >
                         {navLinks.map((link) => (
                             <Link
                                 key={link.name}
                                 to={link.path}
                                 className={styles.mobileLink}
-                                onClick={() => setMenuPath(null)}
+                                onClick={closeMenu}
+                                aria-current={location.pathname === link.path ? 'page' : undefined}
                             >
                                 {link.name}
                             </Link>

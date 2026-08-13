@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { Navigate, Routes, Route, useLocation } from 'react-router-dom';
 import Home from './pages/Home';
-import CollectionPage from './pages/CollectionPage';
-import BasicPage from './pages/BasicPage';
-import CandlePricingPage from './pages/CandlePricingPage';
-import AdminPage from './pages/AdminPage';
 import { CartProvider } from './context/CartContext';
 import CartDrawer from './components/Cart/CartDrawer';
+
+const CollectionPage = lazy(() => import('./pages/CollectionPage'));
+const BasicPage = lazy(() => import('./pages/BasicPage'));
+const CandlePricingPage = lazy(() => import('./pages/CandlePricingPage'));
+const AdminPage = lazy(() => import('./pages/AdminPage'));
+const CheckoutOutcome = lazy(() => import('./pages/CheckoutOutcome'));
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -25,20 +27,23 @@ function App() {
     <CartProvider>
       <ScrollToTop />
       <CartDrawer />
-      <Routes>
+      <Suspense fallback={<p className="routeLoading" role="status">Loading page…</p>}>
+        <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/prices" element={<CandlePricingPage />} />
         <Route path="/scan" element={<Navigate to="/prices" replace />} />
         <Route path="/admin" element={<AdminPage />} />
+        <Route path="/checkout/success" element={<CheckoutOutcome />} />
+        <Route path="/checkout/cancelled" element={<CheckoutOutcome cancelled />} />
         <Route
           path="/shop"
           element={
             <CollectionPage
               metaTitle="Shop All Products | Romazen"
-              metaDescription="Browse the full Romazen collection of premium candles, soaps, fragrances, and home care."
+              metaDescription="Shop RomaZen sculptural soy candles in four architectural forms, featuring the signature Gardenia & Jasmine aroma."
               eyebrow="Romazen Shop"
               heading="Shop All Products"
-              subheading="The full Romazen collection, curated for elevated everyday rituals."
+              subheading="The Four Forms lead a collection curated for elevated everyday rituals."
             />
           }
         />
@@ -47,10 +52,10 @@ function App() {
           element={
             <CollectionPage
               metaTitle="Luxury Soy Candles | Romazen"
-              metaDescription="Explore Romazen luxury soy candles crafted to bring a warm, sophisticated atmosphere to your home."
+              metaDescription="Explore RomaZen Gardenia & Jasmine soy candles in four sculptural glass forms."
               eyebrow="Category"
               heading="Luxury Soy Candles"
-              subheading="Warmth, elegance, and scent profiles inspired by NYC evenings."
+              subheading="Luminous gardenia and soft jasmine, shaped into four architectural forms."
               filterFn={hasCategory('candles')}
             />
           }
@@ -184,7 +189,8 @@ function App() {
             />
           }
         />
-      </Routes>
+        </Routes>
+      </Suspense>
     </CartProvider>
   );
 }

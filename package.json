@@ -14,13 +14,11 @@
     "test:checks": "node --test \"tests/**/*.test.mjs\"",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "images:audit": "node scripts/image-audit.mjs",
+    "images:audit": "node scripts/image-audit.mjs --threshold-kb=200 --strict",
     "images:optimize": "node scripts/optimize-images.mjs"
   },
   "dependencies": {
-    "@stripe/stripe-js": "^8.9.0",
     "@supabase/supabase-js": "^2.98.0",
-    "classnames": "^2.5.1",
     "framer-motion": "^12.23.26",
     "lucide-react": "^0.562.0",
     "react": "^19.2.0",

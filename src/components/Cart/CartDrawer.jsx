@@ -1,20 +1,29 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import { X, Minus, Plus, ShoppingBag } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Button from '../UI/Button';
 import { useOverlayA11y } from '../../hooks/useOverlayA11y';
 import styles from './CartDrawer.module.css';
+import ResponsiveImage from '../UI/ResponsiveImage';
+import { FREE_SHIPPING_THRESHOLD, getBundleDiscountRate } from '../../data/commerce';
 
 // Replace string price with a number to calculate total
 const parsePrice = (priceStr) => Number.parseFloat(priceStr.replaceAll(/[^0-9.]/g, ''));
 
 const CartDrawer = () => {
-  const { items, isDrawerOpen, setIsDrawerOpen, updateQuantity, removeItem, cartTotal } = useCart();
+  const { items, isDrawerOpen, setIsDrawerOpen, updateQuantity, removeItem, cartTotal, cartCount } = useCart();
   const [isCheckingOut, setIsCheckingOut] = React.useState(false);
+  const [checkoutError, setCheckoutError] = React.useState('');
   const drawerRef = React.useRef(null);
   const closeButtonRef = React.useRef(null);
   const closeDrawer = React.useCallback(() => setIsDrawerOpen(false), [setIsDrawerOpen]);
+  const bundleDiscountRate = getBundleDiscountRate(cartCount);
+  const bundleSavings = cartTotal * bundleDiscountRate;
+  const orderSubtotal = cartTotal - bundleSavings;
+  const shippingRemaining = Math.max(0, FREE_SHIPPING_THRESHOLD - orderSubtotal);
+  const shippingProgress = Math.min(100, (orderSubtotal / FREE_SHIPPING_THRESHOLD) * 100);
 
   useOverlayA11y({
     isOpen: isDrawerOpen,
@@ -26,6 +35,7 @@ const CartDrawer = () => {
   const handleCheckout = async () => {
     if (items.length === 0) return;
     setIsCheckingOut(true);
+    setCheckoutError('');
 
     try {
       const response = await fetch('/api/create-checkout-session', {
@@ -36,11 +46,12 @@ const CartDrawer = () => {
         body: JSON.stringify({ items }),
       });
 
+      const session = await response.json().catch(() => ({}));
       if (!response.ok) {
-        throw new Error('Network response was not ok');
+        const reference = session.requestId ? ` Reference: ${session.requestId.slice(0, 8)}.` : '';
+        setCheckoutError(`${session.message || 'Checkout could not be started. Please try again.'}${reference}`);
+        return;
       }
-
-      const session = await response.json();
       
       // Redirect to Stripe Checkout page
       if (session.url) {
@@ -49,8 +60,8 @@ const CartDrawer = () => {
         throw new Error('No checkout URL returned');
       }
     } catch (error) {
-      console.error('Error during checkout:', error);
-      alert('There was an issue initiating checkout. Please try again.');
+      console.error('Checkout request failed', error);
+      setCheckoutError('We could not reach checkout. Your cart is saved; please try again.');
     } finally {
       setIsCheckingOut(false);
     }
@@ -104,7 +115,15 @@ const CartDrawer = () => {
                 <ul className={styles.itemList}>
                   {items.map((item) => (
                     <li key={item.id} className={styles.item}>
-                      <img src={item.image} alt={item.name} className={styles.itemImage} />
+                      <ResponsiveImage
+                        src={item.image}
+                        naturalWidth={item.imageWidth}
+                        alt=""
+                        className={styles.itemImage}
+                        loading="lazy"
+                        decoding="async"
+                        sizes="80px"
+                      />
                       <div className={styles.itemDetails}>
                         <div className={styles.itemHeader}>
                           <h3>{item.name}</h3>
@@ -146,11 +165,46 @@ const CartDrawer = () => {
 
             {items.length > 0 && (
               <div className={styles.footer}>
+                <div className={styles.shippingMeter}>
+                  <p>
+                    {shippingRemaining === 0
+                      ? 'Complimentary standard shipping unlocked.'
+                      : `Add $${shippingRemaining.toFixed(2)} for complimentary standard shipping.`}
+                  </p>
+                  <div
+                    className={styles.progressTrack}
+                    role="progressbar"
+                    aria-label="Progress toward free standard shipping"
+                    aria-valuemin="0"
+                    aria-valuemax={FREE_SHIPPING_THRESHOLD}
+                    aria-valuenow={Math.min(orderSubtotal, FREE_SHIPPING_THRESHOLD)}
+                  >
+                    <span style={{ width: `${shippingProgress}%` }} />
+                  </div>
+                </div>
                 <div className={styles.summaryRow}>
                   <span>Subtotal</span>
                   <span>${cartTotal.toFixed(2)}</span>
                 </div>
-                <p className={styles.taxNotice}>Taxes and shipping calculated at checkout</p>
+                {bundleSavings > 0 && (
+                  <div className={styles.savingsRow}>
+                    <span>Set savings ({Math.round(bundleDiscountRate * 100)}%)</span>
+                    <span>−${bundleSavings.toFixed(2)}</span>
+                  </div>
+                )}
+                <div className={styles.orderTotalRow}>
+                  <span>Order subtotal</span>
+                  <strong>${orderSubtotal.toFixed(2)}</strong>
+                </div>
+                <p className={styles.taxNotice}>
+                  {shippingRemaining === 0 ? 'Standard shipping is free. ' : ''}Taxes calculated at checkout.
+                </p>
+                <p className={styles.policyNotice}>
+                  By continuing, you agree to our <Link to="/terms" onClick={closeDrawer}>terms</Link> and acknowledge our <Link to="/privacy" onClick={closeDrawer}>privacy policy</Link>.
+                </p>
+                <p className={styles.checkoutError} role="alert" aria-live="assertive">
+                  {checkoutError}
+                </p>
                 <Button 
                   variant="primary" 
                   onClick={handleCheckout} 

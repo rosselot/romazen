@@ -29,24 +29,176 @@
   margin: 0 auto;
 }
 
+.collectionPromises {
+  margin: 24px auto 0;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.collectionPromises span {
+  padding: 8px 12px;
+  border: 1px solid rgba(18, 18, 18, 0.12);
+  background: rgba(255, 255, 255, 0.72);
+  color: #3e4954;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.catalogStatus {
+  width: fit-content;
+  max-width: 720px;
+  margin: 20px auto 0;
+  padding: 10px 14px;
+  border: 1px solid #8aa598;
+  background: #edf7f1;
+  color: #174d35;
+  font-size: 13px;
+}
+
+.catalogWarning {
+  border-color: #c58a44;
+  background: #fff7e8;
+  color: #70420e;
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 18px;
 }
 
+.bundleSection {
+  margin-top: 88px;
+  padding: 64px 36px;
+  background: #f0e9dd;
+  border: 1px solid rgba(18, 18, 18, 0.08);
+}
+
+.bundleHeader {
+  max-width: 720px;
+  margin: 0 auto 36px;
+  text-align: center;
+}
+
+.bundleHeading {
+  margin-bottom: 12px;
+  font-size: clamp(28px, 4vw, 42px);
+  line-height: 1.08;
+}
+
+.bundleIntro {
+  color: var(--smoke-gray);
+}
+
+.bundleGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.bundleCard {
+  display: flex;
+  flex-direction: column;
+  min-height: 340px;
+  padding: 28px;
+  background: rgba(255, 255, 255, 0.84);
+  border: 1px solid rgba(18, 18, 18, 0.1);
+}
+
+.bundleCard h3 {
+  margin-bottom: 12px;
+  font-size: 25px;
+}
+
+.bundleCard > p {
+  color: var(--smoke-gray);
+  font-size: 14px;
+}
+
+.bundleEyebrow {
+  margin-bottom: 10px;
+  color: #7a5a17;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.bundleContents {
+  margin: 20px 0 24px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(18, 18, 18, 0.09);
+  color: var(--onyx-black) !important;
+  font-family: var(--font-serif);
+  font-size: 15px !important;
+}
+
+.bundlePriceRow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: auto;
+  margin-bottom: 20px;
+}
+
+.bundlePriceRow strong {
+  font-family: var(--font-serif);
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.regularPrice {
+  color: var(--smoke-gray);
+  font-size: 13px;
+  text-decoration: line-through;
+}
+
+.savingsBadge {
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #e7efdf;
+  color: #31522c;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.bundleCard button {
+  width: 100%;
+}
+
 .card {
   background: #fff;
   border: 1px solid rgba(18, 18, 18, 0.08);
-  padding: 20px;
-  cursor: pointer;
+  padding: 0;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+.cardButton {
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
 .card:hover,
-.card:focus-visible {
+.card:focus-within {
   transform: translateY(-2px);
   box-shadow: 0 12px 26px rgba(18, 18, 18, 0.1);
+}
+
+.cardButton:focus-visible {
+  outline: 3px solid var(--champagne-gold);
+  outline-offset: -3px;
 }
 
 .cardImage {
@@ -69,6 +221,18 @@
   padding: 6px 10px;
 }
 
+.viewDetails {
+  display: block;
+  margin-top: 16px;
+  color: var(--onyx-black);
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
 .inStock {
   color: #14532d;
   background: #dcfce7;
@@ -79,6 +243,12 @@
   color: #7f1d1d;
   background: #fee2e2;
   border: 1px solid #fca5a5;
+}
+
+.unverified {
+  color: #70420e;
+  background: #fff7e8;
+  border: 1px solid #c58a44;
 }
 
 .modalOverlay {
@@ -131,6 +301,22 @@
   font-size: 14px;
 }
 
+.commerceNote {
+  margin-top: 16px;
+  padding: 12px;
+  border-left: 3px solid var(--champagne-gold);
+  background: var(--soft-ivory);
+  color: #3e4954;
+  font-size: 13px;
+}
+
+.purchaseActions {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
 .top {
   display: flex;
   justify-content: space-between;
@@ -149,12 +335,27 @@
   color: var(--onyx-black);
 }
 
+.edition {
+  margin-bottom: 8px;
+  color: #8a6413;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
 .meta {
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--smoke-gray);
   margin-bottom: 8px;
+}
+
+.dimensions {
+  margin-bottom: 8px;
+  color: var(--onyx-black);
+  font-size: 13px;
 }
 
 .notes {
@@ -182,6 +383,32 @@
 }
 
 @media (max-width: 640px) {
+  .page {
+    padding-top: 150px;
+  }
+
+  .collectionPromises {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .collectionPromises span {
+    text-align: center;
+  }
+
+  .bundleSection {
+    margin-top: 64px;
+    padding: 48px 18px;
+  }
+
+  .bundleGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .bundleCard {
+    min-height: 0;
+  }
+
   .footer {
     flex-direction: column;
     align-items: flex-start;

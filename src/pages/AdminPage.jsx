@@ -3,11 +3,13 @@ import { supabase } from '../utils/supabase';
 import { normalizeCandleRecord } from '../data/candlePrices';
 import Layout from '../components/Layout/Layout';
 import Button from '../components/UI/Button';
+import { useOverlayA11y } from '../hooks/useOverlayA11y';
+import { usePageMeta } from '../hooks/usePageMeta';
 import styles from './AdminPage.module.css';
 
 const AdminPage = () => {
   const [session, setSession] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(Boolean(supabase));
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [authError, setAuthError] = useState(null);
@@ -15,48 +17,69 @@ const AdminPage = () => {
   const [candles, setCandles] = useState([]);
   const [fetchingProducts, setFetchingProducts] = useState(false);
   const [updatingId, setUpdatingId] = useState(null);
+  const [catalogError, setCatalogError] = useState('');
+  const [mutationMessage, setMutationMessage] = useState('');
   
-  // Edit Modal State
   const [editingProduct, setEditingProduct] = useState(null);
   const [editForm, setEditForm] = useState(null);
   const [savingEdit, setSavingEdit] = useState(false);
+  const modalRef = React.useRef(null);
+  const closeButtonRef = React.useRef(null);
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setLoading(false);
-    });
+  usePageMeta({
+    title: 'Inventory Admin | Romazen',
+    description: 'Private Romazen inventory administration.',
+    noIndex: true,
+  });
 
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
+  const fetchProducts = React.useCallback(async () => {
+    if (!supabase) return;
 
-    return () => subscription.unsubscribe();
-  }, []);
-
-  const fetchProducts = async () => {
     setFetchingProducts(true);
+    setCatalogError('');
     const { data, error } = await supabase
       .from('products')
       .select('*')
       .order('name');
 
     if (error) {
-      console.error('Error fetching products:', error);
+      console.error('Admin catalog request failed', { code: error.code });
+      setCatalogError(error.status === 401 || error.status === 403
+        ? 'Your account does not have permission to read the catalog.'
+        : 'The catalog could not be reached. Check the Supabase project and try again.');
     } else {
       const parsedCandles = (data || []).map((record) => normalizeCandleRecord(record)).filter(Boolean);
       setCandles(parsedCandles);
     }
     setFetchingProducts(false);
-  };
+  }, []);
 
   useEffect(() => {
-    if (session) {
-      fetchProducts();
-    }
-  }, [session]);
+    if (!supabase) return undefined;
+
+    let ignore = false;
+
+    supabase.auth.getSession().then(({ data: { session: currentSession }, error }) => {
+      if (ignore) return;
+      if (error) setAuthError('Authentication is unavailable. Check the Supabase configuration.');
+      setSession(currentSession);
+      setLoading(false);
+      if (currentSession) void fetchProducts();
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, nextSession) => {
+      setSession(nextSession);
+      if (nextSession) void fetchProducts();
+      else setCandles([]);
+    });
+
+    return () => {
+      ignore = true;
+      subscription.unsubscribe();
+    };
+  }, [fetchProducts]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -80,31 +103,29 @@ const AdminPage = () => {
 
   const toggleStock = async (candle) => {
     setUpdatingId(candle.id);
+    setMutationMessage('');
     const newStockStatus = !candle.inStock;
     
-    // The database uses camelCase for this table
     const { error } = await supabase
       .from('products')
       .update({ inStock: newStockStatus })
       .eq('id', candle.id);
 
     if (error) {
-      console.error('Error updating stock:', error);
-      alert('Failed to update stock: ' + error.message + ' ' + (error.details || ''));
+      console.error('Admin stock update failed', { code: error.code });
+      setMutationMessage(`Could not update ${candle.name}. Nothing changed; please try again.`);
     } else {
-      // Optimistically update the UI
       setCandles((prevCandles) =>
         prevCandles.map((c) =>
           c.id === candle.id ? { ...c, inStock: newStockStatus } : c
         )
       );
+      setMutationMessage(`${candle.name} is now ${newStockStatus ? 'in stock' : 'sold out'}.`);
     }
     setUpdatingId(null);
   };
 
   const handleEditClick = (candle) => {
-    // Map the camelCase properties to match what the form expects based on the DB schema if needed,
-    // but here we just use the normalized properties for local state.
     setEditingProduct(candle);
     setEditForm({
       name: candle.name || '',
@@ -122,19 +143,25 @@ const AdminPage = () => {
     setEditForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleEditClose = () => {
+  const handleEditClose = React.useCallback(() => {
     setEditingProduct(null);
     setEditForm(null);
-  };
+  }, []);
+
+  useOverlayA11y({
+    isOpen: Boolean(editingProduct),
+    containerRef: modalRef,
+    initialFocusRef: closeButtonRef,
+    onClose: handleEditClose,
+  });
 
   const handleEditSubmit = async (e) => {
     e.preventDefault();
     if (!editingProduct) return;
     
     setSavingEdit(true);
+    setMutationMessage('');
 
-    // Prepare payload. Mapping local normalized names back to DB columns if they differ.
-    // Prepare payload matching the exact DB columns
     const updates = {
       name: editForm.name,
       price: editForm.price,
@@ -151,10 +178,9 @@ const AdminPage = () => {
       .eq('id', editingProduct.id);
 
     if (error) {
-      console.error('Error saving edits:', error);
-      alert('Failed to save changes: ' + error.message);
+      console.error('Admin product edit failed', { code: error.code });
+      setMutationMessage('Changes were not saved. Check your connection and permissions, then try again.');
     } else {
-      // Optimistically update the UI table
       setCandles((prevCandles) =>
         prevCandles.map((c) =>
           c.id === editingProduct.id
@@ -162,10 +188,26 @@ const AdminPage = () => {
             : c
         )
       );
+      setMutationMessage(`${editForm.name} was saved.`);
       handleEditClose();
     }
     setSavingEdit(false);
   };
+
+  if (!supabase) {
+    return (
+      <Layout>
+        <div className={styles.loginContainer}>
+          <div className={styles.loginCard} role="alert">
+            <h1 className={styles.title}>Admin configuration needed</h1>
+            <p className={styles.subtitle}>
+              The catalog service is not configured. Add the approved Supabase URL and public key before inventory can be managed.
+            </p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
 
   if (loading && !session) {
     return (
@@ -186,7 +228,7 @@ const AdminPage = () => {
              <p className={styles.subtitle}>Enter your credentials to manage shop inventory.</p>
              
              <form onSubmit={handleLogin} className={styles.form}>
-                {authError && <div className={styles.errorBanner}>{authError}</div>}
+                {authError && <div className={styles.errorBanner} role="alert">{authError}</div>}
                 
                 <div className={styles.inputGroup}>
                   <label htmlFor="email">Email</label>
@@ -198,6 +240,7 @@ const AdminPage = () => {
                     required
                     className={styles.input}
                     placeholder="hello@romazen.com"
+                    autoComplete="username"
                   />
                 </div>
                 
@@ -210,6 +253,7 @@ const AdminPage = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     className={styles.input}
+                    autoComplete="current-password"
                   />
                 </div>
                 
@@ -235,6 +279,17 @@ const AdminPage = () => {
             </div>
             <Button variant="secondary" onClick={handleLogout}>Log Out</Button>
           </div>
+
+          {catalogError && (
+            <div className={styles.errorBanner} role="alert">
+              {catalogError} <button type="button" className={styles.retryButton} onClick={fetchProducts}>Retry</button>
+            </div>
+          )}
+          {mutationMessage && (
+            <p className={mutationMessage.includes('not') || mutationMessage.includes('Could not') ? styles.errorBanner : styles.successBanner} role="status" aria-live="polite">
+              {mutationMessage}
+            </p>
+          )}
 
           {fetchingProducts ? (
             <div className={styles.loadingContainer}>
@@ -294,14 +349,17 @@ const AdminPage = () => {
           {editingProduct && editForm && (
             <div className={styles.modalOverlay} onClick={handleEditClose}>
               <div 
+                ref={modalRef}
                 className={styles.modalCard} 
                 onClick={(e) => e.stopPropagation()}
                 role="dialog"
                 aria-modal="true"
+                aria-labelledby="edit-product-title"
+                tabIndex={-1}
               >
                 <div className={styles.modalHeader}>
-                  <h2 className={styles.modalTitle}>Edit Product</h2>
-                  <button type="button" className={styles.closeButton} onClick={handleEditClose} aria-label="Close">
+                  <h2 id="edit-product-title" className={styles.modalTitle}>Edit Product</h2>
+                  <button ref={closeButtonRef} type="button" className={styles.closeButton} onClick={handleEditClose} aria-label="Close product editor">
                     &times;
                   </button>
                 </div>

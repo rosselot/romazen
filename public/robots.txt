@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://romazen.vercel.app/sitemap.xml
+Disallow: /admin
+
+Sitemap: https://www.romazen.com/sitemap.xml

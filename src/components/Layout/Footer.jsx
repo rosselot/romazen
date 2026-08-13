@@ -15,7 +15,7 @@ const Footer = () => {
                     </div>
 
                     <div className={styles.links}>
-                        <h4 className={styles.heading}>Explore</h4>
+                        <h2 className={styles.heading}>Explore</h2>
                         <ul>
                             <li><Link to="/candles">Soy Candles</Link></li>
                             <li><Link to="/soaps">Artisanal Soaps</Link></li>
@@ -25,7 +25,7 @@ const Footer = () => {
                     </div>
 
                     <div className={styles.links}>
-                        <h4 className={styles.heading}>Company</h4>
+                        <h2 className={styles.heading}>Company</h2>
                         <ul>
                             <li><Link to="/about">Our Story</Link></li>
                             <li><Link to="/sustainability">Sustainability</Link></li>
@@ -34,7 +34,7 @@ const Footer = () => {
                     </div>
 
                     <div className={styles.instagram}>
-                        <h4 className={styles.heading}>Instagram</h4>
+                        <h2 className={styles.heading}>Instagram</h2>
                         <a
                             href={INSTAGRAM_URL}
                             target="_blank"

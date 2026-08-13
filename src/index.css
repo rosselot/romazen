@@ -3,7 +3,7 @@
   --onyx-black: #121212;
   --soft-ivory: #F9F9F7;
   --champagne-gold: #D4AF37;
-  --smoke-gray: #708090;
+  --smoke-gray: #4F5D6A;
   --pale-sage: #C1CFA1;
   
   /* UI Colors */
@@ -13,8 +13,8 @@
   --accent-gold: var(--champagne-gold);
   
   /* Typography */
-  --font-serif: 'Playfair Display', serif;
-  --font-sans: 'Inter', sans-serif;
+  --font-serif: 'Iowan Old Style', 'Baskerville', 'Times New Roman', serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   
   /* Spacing */
   --section-padding: 80px 20px;
@@ -58,6 +58,50 @@ img {
   max-width: 100%;
   height: auto;
   display: block;
+}
+
+picture {
+  display: block;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+.routeLoading {
+  min-height: 70vh;
+  padding: 160px 20px;
+  text-align: center;
+}
+
+main h1[tabindex='-1']:focus {
+  outline: none;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
 }
 
 .container {

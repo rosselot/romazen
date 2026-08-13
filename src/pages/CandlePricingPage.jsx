@@ -2,19 +2,50 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout/Layout';
 import Button from '../components/UI/Button';
+import ResponsiveImage from '../components/UI/ResponsiveImage';
 import { supabase } from '../utils/supabase';
 import { INSTAGRAM_URL } from '../data/social';
-import { STORE_CANDLE_PRICES, normalizeCandleRecord } from '../data/candlePrices';
+import { CANDLE_FORM_IDS, STORE_CANDLE_PRICES, normalizeCandleRecord } from '../data/candlePrices';
+import { FREE_SHIPPING_THRESHOLD, getBundleDiscountRate } from '../data/commerce';
 import { usePageMeta } from '../hooks/usePageMeta';
 import { useOverlayA11y } from '../hooks/useOverlayA11y';
 import { useCart } from '../context/CartContext';
 import styles from './CandlePricingPage.module.css';
 
+const BUNDLE_OFFERS = [
+  {
+    id: 'daily-ritual',
+    eyebrow: 'Best first set',
+    name: 'The Daily Ritual',
+    formIds: ['silk-santal-33oz', 'roman-marble-8oz'],
+    description: 'The Halo for intimate moments, paired with The Arch for everyday atmosphere.',
+  },
+  {
+    id: 'roman-pair',
+    eyebrow: 'Most popular',
+    name: 'The Roman Pair',
+    formIds: ['roman-marble-8oz', 'midnight-fig-62oz'],
+    description: 'Two architectural heights designed to give a room rhythm, depth, and warm floral presence.',
+  },
+  {
+    id: 'four-forms',
+    eyebrow: 'Collector set',
+    name: 'The Four Forms',
+    formIds: CANDLE_FORM_IDS,
+    description: 'The complete silhouette—from the intimate Halo to the dramatic Monument.',
+  },
+];
+
+const parseDisplayPrice = (price) => Number.parseFloat(String(price).replace(/[^0-9.]/g, '')) || 0;
+
 const CandlePricingPage = () => {
   const navigate = useNavigate();
-  const { addItem } = useCart();
+  const { addItem, addItems } = useCart();
   const [selectedId, setSelectedId] = React.useState(null);
   const [candles, setCandles] = React.useState(STORE_CANDLE_PRICES);
+  const [catalogState, setCatalogState] = React.useState(
+    supabase && import.meta.env.MODE !== 'test' ? 'checking' : 'fallback',
+  );
   const modalRef = React.useRef(null);
   const closeButtonRef = React.useRef(null);
   const closeDetails = React.useCallback(() => setSelectedId(null), []);
@@ -27,10 +58,12 @@ const CandlePricingPage = () => {
     let ignore = false;
 
     const fetchCandles = async () => {
-      const { data, error } = await supabase
+      let query = supabase
         .from('products')
         .select('*')
         .order('name');
+      if (typeof AbortSignal?.timeout === 'function') query = query.abortSignal(AbortSignal.timeout(6000));
+      const { data, error } = await query;
 
       if (ignore) {
         return;
@@ -40,12 +73,20 @@ const CandlePricingPage = () => {
         if (import.meta.env.DEV) {
           console.warn('Falling back to local candle catalog because the remote fetch failed.', error);
         }
+        setCatalogState('fallback');
         return;
       }
 
-      const remoteCandles = (data || []).map(normalizeCandleRecord).filter(Boolean);
+      const remoteCandles = (data || [])
+        .map(normalizeCandleRecord)
+        .filter(Boolean)
+        .filter((item) => CANDLE_FORM_IDS.includes(item.id))
+        .sort((a, b) => a.vesselOrder - b.vesselOrder);
       if (remoteCandles.length > 0) {
         setCandles(remoteCandles);
+        setCatalogState('live');
+      } else {
+        setCatalogState('fallback');
       }
     };
 
@@ -57,6 +98,22 @@ const CandlePricingPage = () => {
   }, []);
 
   const selectedItem = candles.find((item) => item.id === selectedId) ?? null;
+  const bundleOffers = React.useMemo(() => BUNDLE_OFFERS.map((offer) => {
+    const items = offer.formIds
+      .map((id) => candles.find((candle) => candle.id === id))
+      .filter(Boolean);
+    const regularTotal = items.reduce((total, item) => total + parseDisplayPrice(item.price), 0);
+    const discountRate = getBundleDiscountRate(items.length);
+
+    return {
+      ...offer,
+      items,
+      regularTotal,
+      bundleTotal: regularTotal * (1 - discountRate),
+      discountPercent: Math.round(discountRate * 100),
+      isAvailable: items.length === offer.formIds.length && items.every((item) => item.inStock),
+    };
+  }), [candles]);
 
   useOverlayA11y({
     isOpen: Boolean(selectedItem),
@@ -66,8 +123,8 @@ const CandlePricingPage = () => {
   });
 
   usePageMeta({
-    title: 'In-Store Candle Prices | Romazen',
-    description: 'Scan-ready in-store Romazen candle pricing, sizes, and scent notes.',
+    title: 'The Four Forms: Gardenia & Jasmine Candles | RomaZen',
+    description: 'Shop RomaZen sculptural soy candles in four architectural forms, scented with gardenia and jasmine. Free standard shipping at $100.',
   });
 
   return (
@@ -75,32 +132,39 @@ const CandlePricingPage = () => {
       <section className={styles.page}>
         <div className="container">
           <div className={styles.header}>
-            <span className={styles.eyebrow}>QR Store Menu</span>
-            <h1 className={styles.title}>In-Store Candle Prices</h1>
+            <span className={styles.eyebrow}>The Four Forms · Gardenia &amp; Jasmine</span>
+            <h1 className={styles.title}>One Floral Ritual. Four Sculptural Forms.</h1>
             <p className={styles.subtitle}>
-              Quick pricing for our core candle lineup. Ask in-store for seasonal editions and bundle offers.
+              Luminous gardenia opens into soft jasmine—a serene white-floral aroma, hand-poured in four architectural glass forms.
+            </p>
+            <div className={styles.collectionPromises} aria-label="Collection highlights">
+              <span>Hand-poured soy</span>
+              <span>Save 10–15% on sets</span>
+              <span>Free standard shipping at ${FREE_SHIPPING_THRESHOLD}+</span>
+            </div>
+            <p
+              className={`${styles.catalogStatus} ${catalogState === 'fallback' ? styles.catalogWarning : ''}`}
+              role={catalogState === 'fallback' ? 'alert' : 'status'}
+            >
+              {catalogState === 'live' && 'Live prices and online availability verified.'}
+              {catalogState === 'checking' && 'Verifying live prices and availability…'}
+              {catalogState === 'fallback' && 'Live inventory is unavailable. These prices are a read-only in-store reference, and online checkout is paused.'}
             </p>
           </div>
 
           <div className={styles.grid}>
             {candles.map((item) => (
-              <article
-                key={item.id}
-                className={styles.card}
-                role="button"
-                tabIndex={0}
-                onClick={() => setSelectedId(item.id)}
-                onKeyDown={(event) => {
-                  if (event.key === 'Enter' || event.key === ' ') {
-                    event.preventDefault();
-                    setSelectedId(item.id);
-                  }
-                }}
-                aria-label={`Open details for ${item.name}`}
-              >
+              <article key={item.id} className={styles.card}>
+                <button
+                  type="button"
+                  className={styles.cardButton}
+                  onClick={() => setSelectedId(item.id)}
+                  aria-label={`Open details for ${item.name}`}
+                >
                 {item.image && (
-                  <img
+                  <ResponsiveImage
                     src={item.image}
+                    naturalWidth={item.imageWidth}
                     alt={item.name}
                     className={styles.cardImage}
                     loading="lazy"
@@ -108,18 +172,58 @@ const CandlePricingPage = () => {
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                   />
                 )}
+                <p className={styles.edition}>
+                  {item.edition}{item.vesselLabel && ` · ${item.vesselLabel}`}
+                </p>
                 <div className={styles.top}>
                   <h2 className={styles.name}>{item.name}</h2>
                   <span className={styles.price}>{item.price}</span>
                 </div>
-                <p className={styles.meta}>{item.size} · {item.burnTime}</p>
+                <p className={styles.meta}>{item.size}{item.burnTime && ` · ${item.burnTime}`}</p>
+                {item.dimensions && <p className={styles.dimensions}>{item.dimensions}</p>}
                 <p className={styles.notes}>{item.notes}</p>
-                <span className={`${styles.stockBadge} ${item.inStock ? styles.inStock : styles.outOfStock}`}>
-                  {item.inStock ? 'In Stock' : 'Sold Out'}
+                <span className={`${styles.stockBadge} ${catalogState === 'live' ? (item.inStock ? styles.inStock : styles.outOfStock) : styles.unverified}`}>
+                  {catalogState === 'live' ? (item.inStock ? 'In Stock' : 'Sold Out') : 'Availability unverified'}
                 </span>
+                <span className={styles.viewDetails}>View details</span>
+                </button>
               </article>
             ))}
           </div>
+
+          <section className={styles.bundleSection} aria-labelledby="bundle-heading">
+            <div className={styles.bundleHeader}>
+              <span className={styles.eyebrow}>Build Your Ritual</span>
+              <h2 id="bundle-heading" className={styles.bundleHeading}>Intelligent combinations, automatic savings</h2>
+              <p className={styles.bundleIntro}>
+                Choose two and save 10%, three and save 12%, or collect all four and save 15%. Savings appear automatically in your cart.
+              </p>
+            </div>
+            <div className={styles.bundleGrid}>
+              {bundleOffers.map((offer) => (
+                <article key={offer.id} className={styles.bundleCard}>
+                  <span className={styles.bundleEyebrow}>{offer.eyebrow}</span>
+                  <h3>{offer.name}</h3>
+                  <p>{offer.description}</p>
+                  <p className={styles.bundleContents}>
+                    {offer.items.map((item) => item.name).join(' + ')}
+                  </p>
+                  <div className={styles.bundlePriceRow}>
+                    <span className={styles.regularPrice}>${offer.regularTotal.toFixed(2)}</span>
+                    <strong>${offer.bundleTotal.toFixed(2)}</strong>
+                    <span className={styles.savingsBadge}>Save {offer.discountPercent}%</span>
+                  </div>
+                  <Button
+                    variant="dark"
+                    disabled={catalogState !== 'live' || !offer.isAvailable}
+                    onClick={() => addItems(offer.items)}
+                  >
+                    {catalogState !== 'live' ? 'Online checkout paused' : `Add ${offer.name}`}
+                  </Button>
+                </article>
+              ))}
+            </div>
+          </section>
 
           {selectedItem && (
             <div className={styles.modalOverlay} onClick={closeDetails}>
@@ -143,8 +247,9 @@ const CandlePricingPage = () => {
                 </button>
 
                 {selectedItem.image && (
-                  <img
+                  <ResponsiveImage
                     src={selectedItem.image}
+                    naturalWidth={selectedItem.imageWidth}
                     alt={selectedItem.name}
                     className={styles.modalImage}
                     loading="eager"
@@ -152,27 +257,39 @@ const CandlePricingPage = () => {
                   />
                 )}
 
+                <p className={styles.edition}>
+                  {selectedItem.edition}{selectedItem.vesselLabel && ` · ${selectedItem.vesselLabel}`}
+                </p>
                 <div className={styles.top}>
                   <h2 id="candle-details-title" className={styles.name}>{selectedItem.name}</h2>
                   <span className={styles.price}>{selectedItem.price}</span>
                 </div>
-                <p className={styles.meta}>{selectedItem.size} · {selectedItem.burnTime}</p>
+                <p className={styles.meta}>{selectedItem.size}{selectedItem.burnTime && ` · ${selectedItem.burnTime}`}</p>
+                {selectedItem.dimensions && <p className={styles.dimensions}>{selectedItem.dimensions}</p>}
                 <p className={styles.notes}>{selectedItem.notes}</p>
                 {selectedItem.details && <p className={styles.details}>{selectedItem.details}</p>}
-                
-                <div style={{ marginTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                    <span className={`${styles.stockBadge} ${selectedItem.inStock ? styles.inStock : styles.outOfStock}`}>
-                    {selectedItem.inStock ? 'In Stock' : 'Sold Out'}
+                <p className={styles.details}>Trim the wick to ¼ inch before each burn. Never leave a burning candle unattended.</p>
+                <p className={styles.commerceNote}>
+                  Set savings apply automatically: 10% on two candles, 12% on three, and 15% on four or more. Free standard shipping at ${FREE_SHIPPING_THRESHOLD}+ after savings.
+                </p>
+
+                <div className={styles.purchaseActions}>
+                    <span className={`${styles.stockBadge} ${catalogState === 'live' ? (selectedItem.inStock ? styles.inStock : styles.outOfStock) : styles.unverified}`}>
+                    {catalogState === 'live' ? (selectedItem.inStock ? 'In Stock' : 'Sold Out') : 'Availability unverified'}
                     </span>
-                    <Button 
-                        variant="primary" 
-                        disabled={!selectedItem.inStock}
+                    <Button
+                        variant="dark"
+                        disabled={!selectedItem.inStock || catalogState !== 'live'}
                         onClick={() => {
                             addItem(selectedItem);
                             closeDetails();
                         }}
                     >
-                        {selectedItem.inStock ? 'Add to Cart' : 'Unavailable'}
+                        {catalogState !== 'live'
+                          ? 'Online checkout paused'
+                          : selectedItem.inStock
+                            ? 'Add to Cart'
+                            : 'Unavailable'}
                     </Button>
                 </div>
               </div>
@@ -180,12 +297,12 @@ const CandlePricingPage = () => {
           )}
 
           <div className={styles.footer}>
-            <p className={styles.disclaimer}>Prices shown are in-store retail and may change by season.</p>
+            <p className={styles.disclaimer}>Prices shown in USD. Bundle savings and free-shipping eligibility are confirmed in your cart.</p>
             <div className={styles.actions}>
-              <Button variant="secondary" onClick={() => navigate('/shop')}>Full Catalog</Button>
-              <Button variant="primary" onClick={() => navigate('/')}>Brand Story</Button>
+              <Button variant="outlineDark" onClick={() => navigate('/shop')}>Full Catalog</Button>
+              <Button variant="dark" onClick={() => navigate('/')}>Brand Story</Button>
               <Button
-                variant="secondary"
+                variant="outlineDark"
                 onClick={() => window.open(INSTAGRAM_URL, '_blank', 'noopener,noreferrer')}
               >
                 Instagram

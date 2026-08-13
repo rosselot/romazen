@@ -9,44 +9,59 @@ const renderWithRoute = (route) =>
     </MemoryRouter>,
   );
 
+beforeEach(() => localStorage.clear());
+afterEach(() => vi.unstubAllGlobals());
+
 describe('App routing UI', () => {
   it('renders the home hero on /', () => {
     renderWithRoute('/');
-    expect(screen.getByRole('heading', { name: /elegance in every breath/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /roman form. modern calm/i })).toBeInTheDocument();
   });
 
-  it('renders filtered candles collection on /candles', () => {
+  it('renders filtered candles collection on /candles', async () => {
     renderWithRoute('/candles');
-    expect(screen.getByRole('heading', { name: /luxury soy candles/i })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: /luxury soy candles/i })).toBeInTheDocument();
   });
 
   it('renders QR candle pricing page on /prices', async () => {
     renderWithRoute('/prices');
-    expect(await screen.findByRole('heading', { name: /in-store candle prices/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /open details for a roma in marble/i })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: /one floral ritual. four sculptural forms/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /open details for the halo/i })).toBeInTheDocument();
+    expect(screen.getByText('6″ H × 3⅜″ W')).toBeInTheDocument();
+    expect(screen.getAllByText(/gardenia · jasmine/i).length).toBeGreaterThanOrEqual(4);
   });
 
   it('redirects /scan to the pricing page', async () => {
     renderWithRoute('/scan');
-    expect(await screen.findByRole('heading', { name: /in-store candle prices/i })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: /one floral ritual. four sculptural forms/i })).toBeInTheDocument();
   });
 
   it('closes the candle details modal on escape', async () => {
     renderWithRoute('/prices');
 
-    fireEvent.click(await screen.findByRole('button', { name: /open details for a roma in marble/i }));
-    expect(screen.getByRole('dialog', { name: /a roma in marble/i })).toBeInTheDocument();
+    fireEvent.click(await screen.findByRole('button', { name: /open details for the arch/i }));
+    expect(screen.getByRole('dialog', { name: /the arch/i })).toBeInTheDocument();
 
     fireEvent.keyDown(document, { key: 'Escape' });
-    expect(screen.queryByRole('dialog', { name: /a roma in marble/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('dialog', { name: /the arch/i })).not.toBeInTheDocument();
   });
 
   it('closes the cart drawer on escape', async () => {
+    localStorage.setItem('romazen_cart', JSON.stringify({
+      version: 2,
+      items: [{
+        id: 'roman-marble-8oz',
+        name: 'The Arch',
+        price: '$52.00',
+        quantity: 1,
+        image: '/assets/images/NoHexagonalOnBooks.jpeg',
+        imageWidth: 1024,
+      }],
+    }));
     renderWithRoute('/prices');
 
-    fireEvent.click(await screen.findByRole('button', { name: /open details for a roma in marble/i }));
-    fireEvent.click(screen.getByRole('button', { name: /add to cart/i }));
-    expect(screen.getByRole('dialog', { name: /your cart/i })).toBeInTheDocument();
+    fireEvent.click(await screen.findByRole('button', { name: /open shopping cart/i }));
+    expect(await screen.findByRole('dialog', { name: /your cart/i })).toBeInTheDocument();
 
     fireEvent.keyDown(document, { key: 'Escape' });
     await waitFor(() => {
@@ -54,28 +69,68 @@ describe('App routing UI', () => {
     });
   });
 
-  it('renders legal content on /privacy', () => {
+  it('renders legal content on /privacy', async () => {
     renderWithRoute('/privacy');
-    expect(screen.getByRole('heading', { name: /privacy policy/i })).toBeInTheDocument();
-    expect(screen.getByText(/we do not sell personal information/i)).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: /privacy policy/i })).toBeInTheDocument();
+    expect(await screen.findByText(/we do not sell personal information/i)).toBeInTheDocument();
   });
 
-  it('renders not found page on unknown route', () => {
+  it('renders not found page on unknown route', async () => {
     renderWithRoute('/missing-page');
-    expect(screen.getByRole('heading', { name: /page not found/i })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: /page not found/i })).toBeInTheDocument();
+  });
+
+  it('never confirms an unverified checkout return', async () => {
+    renderWithRoute('/checkout/success');
+    expect(await screen.findByRole('heading', { name: /confirmation unavailable/i })).toBeInTheDocument();
+    expect(screen.getByText(/no paid order has been confirmed/i)).toBeInTheDocument();
+  });
+
+  it('clears the cart once after a verified payment', async () => {
+    const result = { verified: true, reference: 'ABC123' };
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true, json: async () => result }));
+    localStorage.setItem('romazen_cart', JSON.stringify({
+      version: 2,
+      items: [{ id: 'candle', name: 'Candle', price: '$52.00', quantity: 1 }],
+    }));
+
+    const view = renderWithRoute('/checkout/success?session_id=cs_test_abc123');
+    expect(await screen.findByRole('heading', { name: /order is confirmed/i })).toBeInTheDocument();
+    expect(JSON.parse(localStorage.getItem('romazen_cart')).items).toHaveLength(0);
+
+    view.unmount();
+    localStorage.setItem('romazen_cart', JSON.stringify({
+      version: 2,
+      items: [{ id: 'new-candle', name: 'New Candle', price: '$50.00', quantity: 1 }],
+    }));
+    renderWithRoute('/checkout/success?session_id=cs_test_abc123');
+    expect(await screen.findByRole('heading', { name: /order is confirmed/i })).toBeInTheDocument();
+    expect(JSON.parse(localStorage.getItem('romazen_cart')).items).toHaveLength(1);
+  });
+
+  it('explains cancellation without clearing the cart', async () => {
+    localStorage.setItem('romazen_cart', JSON.stringify({
+      version: 2,
+      items: [{ id: 'candle', name: 'Candle', price: '$52.00', quantity: 1 }],
+    }));
+    renderWithRoute('/checkout/cancelled');
+
+    expect(await screen.findByRole('heading', { name: /checkout cancelled/i })).toBeInTheDocument();
+    expect(screen.getByText(/no payment was completed/i)).toBeInTheDocument();
+    expect(JSON.parse(localStorage.getItem('romazen_cart')).items).toHaveLength(1);
   });
 
   it('closes mobile menu on route change', () => {
     renderWithRoute('/candles');
 
-    expect(screen.getAllByRole('link', { name: /candle prices/i })).toHaveLength(1);
+    expect(screen.getAllByRole('link', { name: /the four forms/i })).toHaveLength(1);
 
     const menuButton = document.querySelector('button[aria-label="Open navigation menu"]');
     expect(menuButton).not.toBeNull();
     fireEvent.click(menuButton);
-    expect(screen.getAllByRole('link', { name: /candle prices/i })).toHaveLength(2);
+    expect(screen.getAllByRole('link', { name: /the four forms/i })).toHaveLength(2);
 
     fireEvent.click(screen.getAllByRole('link', { name: /romazen/i })[0]);
-    expect(screen.getAllByRole('link', { name: /candle prices/i })).toHaveLength(1);
+    expect(screen.getAllByRole('link', { name: /the four forms/i })).toHaveLength(1);
   });
 });

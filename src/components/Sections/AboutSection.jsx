@@ -1,41 +1,33 @@
 import React from 'react';
 import styles from './AboutSection.module.css';
-import { motion } from 'framer-motion';
+import ResponsiveImage from '../UI/ResponsiveImage';
 
 const AboutSection = () => {
     return (
         <section className={styles.about}>
             <div className="container">
                 <div className={styles.grid}>
-                    <motion.div
-                        initial={{ opacity: 0, x: -30 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.8 }}
-                        className={styles.imageWrapper}
-                    >
-                        <img
-                            src="/assets/images/product-soap-artisanal.png"
-                            alt="Romazen Artisanal Soap"
+                    <div className={styles.imageWrapper}>
+                        <ResponsiveImage
+                            src="/assets/images/romazen-limited-four-sizes.jpeg"
+                            naturalWidth={1122}
+                            alt="The four RomaZen sculptural candle forms with gold labels"
                             className={styles.image}
+                            loading="lazy"
+                            decoding="async"
+                            sizes="(max-width: 768px) 100vw, 50vw"
                         />
                         <div className={styles.accentBox}></div>
-                    </motion.div>
+                    </div>
 
-                    <motion.div
-                        initial={{ opacity: 0, x: 30 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.8, delay: 0.2 }}
-                        className={styles.content}
-                    >
-                        <span className={styles.eyebrow}>The Essence of Romazen</span>
-                        <h2 className={styles.heading}>Inspired by the Rhythm <br /> of New York.</h2>
+                    <div className={styles.content}>
+                        <span className={styles.eyebrow}>The RomaZen Signature</span>
+                        <h2 className={styles.heading}>A Garden in the <br /> Heart of the City.</h2>
                         <p className={styles.text}>
-                            Romazen is a boutique wellness house born in the heart of NYC. We believe that true luxury lies in moments of stillness amidst the urban bustle. Our products are handcrafted in small batches, using only the finest natural ingredients and sustainable practices.
+                            RomaZen is a boutique candle house born in New York. Our signature aroma pairs the creamy radiance of gardenia with the soft, sensual lift of jasmine—an elegant white-floral composition made for moments of stillness.
                         </p>
                         <p className={styles.text}>
-                            From the sophistication of Wall Street to the serenity of a rooftop garden, every scent and texture is designed to bring a touch of Manhattan elegance into your sanctuary.
+                            The same fragrance is hand-poured into four clear-glass forms, allowing you to choose the scale of the ritual while keeping a calm, architectural language throughout your home.
                         </p>
                         <div className={styles.stats}>
                             <div className={styles.stat}>
@@ -47,7 +39,7 @@ const AboutSection = () => {
                                 <span className={styles.statLabel}>Batch Craft</span>
                             </div>
                         </div>
-                    </motion.div>
+                    </div>
                 </div>
             </div>
         </section>

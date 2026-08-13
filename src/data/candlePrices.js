@@ -23,7 +23,7 @@ const formatPrice = (value) => {
   return '$0.00';
 };
 
-const parseStock = (value, fallback = true) => {
+const parseStock = (value, fallback = false) => {
   if (typeof value === 'boolean') {
     return value;
   }
@@ -45,72 +45,114 @@ const parseStock = (value, fallback = true) => {
   return fallback;
 };
 
+const LABEL_PHOTOS = {
+  'silk-santal-33oz': { image: '/assets/images/romazen-limited-size-1.jpeg', imageWidth: 1254 },
+  'roman-marble-8oz': { image: '/assets/images/romazen-limited-size-2.jpeg', imageWidth: 1254 },
+  'midnight-fig-62oz': { image: '/assets/images/romazen-limited-size-3.jpeg', imageWidth: 1254 },
+  'wall-street-smoke-45oz': { image: '/assets/images/romazen-limited-size-4.jpeg', imageWidth: 1254 },
+  'Familia 1': { image: '/assets/images/romazen-limited-four-sizes.jpeg', imageWidth: 1122 },
+};
+
+const COLLECTION_DETAILS = {
+  'silk-santal-33oz': {
+    name: 'The Halo',
+    edition: 'The Four Forms',
+    vesselLabel: 'Form I',
+    dimensions: '3½″ H × 4″ W',
+    order: 1,
+    size: 'Petite form',
+    price: 38,
+    notes: 'Gardenia · Jasmine',
+    details: 'An intimate floral ritual for a bedside table, bath, or thoughtful gift.',
+    description: 'A petite sculptural soy candle with luminous gardenia and soft jasmine notes.',
+  },
+  'roman-marble-8oz': {
+    name: 'The Arch',
+    edition: 'The Four Forms',
+    vesselLabel: 'Form II',
+    dimensions: '6″ H × 3⅜″ W',
+    order: 2,
+    size: 'Classic form',
+    price: 52,
+    notes: 'Gardenia · Jasmine',
+    details: 'Our everyday hero: a balanced sculptural form for bedrooms, offices, and entryways.',
+    description: 'A classic sculptural soy candle with luminous gardenia and soft jasmine notes.',
+  },
+  'midnight-fig-62oz': {
+    name: 'The Column',
+    edition: 'The Four Forms',
+    vesselLabel: 'Form III',
+    dimensions: '8″ H × 3½″ W',
+    order: 3,
+    size: 'Grand form',
+    price: 74,
+    notes: 'Gardenia · Jasmine',
+    details: 'A taller floral statement designed to bring architectural presence to living and dining spaces.',
+    description: 'A tall sculptural soy candle with luminous gardenia and soft jasmine notes.',
+  },
+  'wall-street-smoke-45oz': {
+    name: 'The Monument',
+    edition: 'The Four Forms',
+    vesselLabel: 'Form IV',
+    dimensions: '11″ H × 3½″ W',
+    order: 4,
+    size: 'Monumental form',
+    price: 110,
+    notes: 'Gardenia · Jasmine',
+    details: 'The collection’s most dramatic form—an enduring floral centerpiece for expansive rooms and celebrations.',
+    description: 'A monumental sculptural soy candle with luminous gardenia and soft jasmine notes.',
+  },
+  'Familia 1': {
+    name: 'The Four Forms Set',
+    edition: 'Complete Collection',
+    vesselLabel: 'Forms I–IV',
+    dimensions: 'Includes all four forms',
+    order: 5,
+    size: 'Complete four-form set',
+    price: 232.90,
+    notes: 'Gardenia · Jasmine',
+    details: 'The complete architectural collection in RomaZen’s signature white-floral aroma.',
+    description: 'All four sculptural soy candles with luminous gardenia and soft jasmine notes.',
+  },
+};
+
+export const CANDLE_FORM_IDS = [
+  'silk-santal-33oz',
+  'roman-marble-8oz',
+  'midnight-fig-62oz',
+  'wall-street-smoke-45oz',
+];
+
 export const normalizeCandleRecord = (record) => {
   if (!record) {
     return null;
   }
 
+  const id = String(record.id);
+  const labelPhoto = LABEL_PHOTOS[id];
+  const collection = COLLECTION_DETAILS[id];
+  const stockCount = Number(record.stockCount ?? record.stock_count ?? record.inventory ?? record.quantity);
+
   return {
-    id: String(record.id),
-    name: record.name ?? 'Romazen Candle',
-    size: record.size ?? record.size_label ?? record.sizeLabel ?? 'Signature size',
-    burnTime: record.burnTime ?? record.burn_time ?? record.burnTimeHours ?? 'Approx. 50 hrs',
-    price: formatPrice(record.price),
-    notes: record.notes ?? record.scent_notes ?? record.scentNotes ?? record.description ?? 'Seasonal scent notes',
-    image: record.image ?? record.image_url ?? record.imageUrl ?? '/assets/images/Living-Family.png',
+    id,
+    name: collection?.name ?? record.name ?? 'RomaZen Candle',
+    edition: collection?.edition ?? record.edition ?? 'The Four Forms',
+    vesselLabel: collection?.vesselLabel ?? record.vesselLabel ?? record.vessel_label ?? null,
+    dimensions: collection?.dimensions ?? record.dimensions ?? null,
+    vesselOrder: collection?.order ?? 99,
+    size: collection?.size ?? record.size ?? record.size_label ?? record.sizeLabel ?? 'Signature form',
+    burnTime: collection ? null : (record.burnTime ?? record.burn_time ?? record.burnTimeHours ?? null),
+    price: formatPrice(collection?.price ?? record.price),
+    notes: collection?.notes ?? record.notes ?? record.scent_notes ?? record.scentNotes ?? record.description ?? 'Gardenia · Jasmine',
+    image: labelPhoto?.image ?? record.image ?? record.image_url ?? record.imageUrl ?? '/assets/images/Living-Family.png',
+    imageWidth: labelPhoto?.imageWidth ?? (Number(record.imageWidth ?? record.image_width) || 1024),
     inStock: parseStock(record.inStock ?? record.in_stock ?? record.available, true),
-    details: record.details ?? record.long_description ?? record.description ?? null,
-    description: record.description ?? record.details ?? record.long_description ?? null,
+    stockCount: Number.isInteger(stockCount) && stockCount >= 0 ? stockCount : null,
+    details: collection?.details ?? record.details ?? record.long_description ?? record.description ?? null,
+    description: collection?.description ?? record.description ?? record.details ?? record.long_description ?? null,
   };
 };
 
-export const STORE_CANDLE_PRICES = [
-  {
-    id: 'roman-marble-8oz',
-    name: 'A Roma in Marble',
-    size: '8 oz',
-    burnTime: '45-50 hrs',
-    price: '$45.00',
-    notes: 'White tea, soft musk, clean cotton',
-    image: '/assets/images/NoHexagonalOnBooks.jpeg',
-    inStock: true,
-    details: 'Our signature marble-glass profile with clean throw and balanced softness. Available now in-store.',
-    description: 'White tea, soft musk, and clean cotton in our signature marble-glass candle.',
-  },
-  {
-    id: 'midnight-fig-62oz',
-    name: 'Midnight Fig',
-    size: '62 oz',
-    burnTime: '85-90 hrs',
-    price: '$89.00',
-    notes: 'Wild fig, cedarwood, green leaves',
-    image: '/assets/images/RomaTallGarden.jpeg',
-    inStock: true,
-    details: 'A large-format candle for statement spaces, available now in 62 oz.',
-    description: 'A large-format candle with wild fig, cedarwood, and green leaves.',
-  },
-  {
-    id: 'silk-santal-33oz',
-    name: 'Silk & Santal',
-    size: '33 oz',
-    burnTime: '55-60 hrs',
-    price: '$48.00',
-    notes: 'Sandalwood, white silk, vanilla',
-    image: '/assets/images/PhotoCandlethird.jpeg',
-    inStock: true,
-    details: 'A smooth sandalwood profile with soft vanilla warmth in our 33 oz vessel.',
-    description: 'Sandalwood, white silk, and vanilla in a soft, warm 33 oz candle.',
-  },
-  {
-    id: 'wall-street-smoke-45oz',
-    name: 'New York Smoke',
-    size: '45 oz',
-    burnTime: '65-70 hrs',
-    price: '$68.00',
-    notes: 'Tobacco leaf, oud, black tea',
-    image: '/assets/images/CandleNotHexagonalCarlota.jpeg',
-    inStock: true,
-    details: 'A darker profile with tobacco leaf, oud, and black tea for evening spaces.',
-    description: 'A moody candle with tobacco leaf, oud, and black tea.',
-  },
-].map(normalizeCandleRecord);
+export const STORE_CANDLE_PRICES = CANDLE_FORM_IDS
+  .map((id) => normalizeCandleRecord({ id, inStock: true }))
+  .sort((a, b) => a.vesselOrder - b.vesselOrder);
