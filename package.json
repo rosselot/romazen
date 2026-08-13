@@ -9,7 +9,7 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "vitest run && node --test \"tests/**/*.test.mjs\"",
+    "test": "vitest run && node --test tests/*.test.mjs",
     "test:ui": "vitest run",
     "test:checks": "node --test \"tests/**/*.test.mjs\"",
     "test:watch": "vitest",
