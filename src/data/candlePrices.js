@@ -66,7 +66,7 @@ const LABEL_PHOTOS = {
       { src: '/assets/images/romazen-atrium-cloche-signature.jpeg', width: 1254, alt: 'The Atrium inner candle protected by its complete full-height glass cloche jacket' },
       { src: '/assets/images/romazen-atrium-cloche-roman.jpeg', width: 1254, alt: 'The full-cloche Atrium with a Roman arch light treatment' },
       { src: '/assets/images/romazen-atrium-cloche-morning.jpeg', width: 1254, alt: 'The full-cloche Atrium in a quiet morning ritual setting' },
-      { src: '/assets/images/romazen-atrium-cloche-evening.jpeg', width: 1254, alt: 'The Atrium inner candle burning beside its complete removed bell-jar jacket' },
+      { src: '/assets/images/romazen-atrium-cloche-evening-v2.jpeg', width: 1254, alt: 'The Atrium inner candle burning beside its proportionally fitted full glass bell-jar jacket' },
       { src: '/assets/images/romazen-atrium-cloche-detail.jpeg', width: 1254, alt: 'Close detail of The Atrium inner candle and continuous full-height glass jacket' },
       { src: '/assets/images/romazen-atrium-cloche-gift.jpeg', width: 1254, alt: 'The full-cloche Atrium presented as a refined gift' },
       { src: '/assets/images/romazen-atrium-cloche-pair.jpeg', width: 1254, alt: 'Two Atrium candles each protected by a complete glass bell-jar jacket' },

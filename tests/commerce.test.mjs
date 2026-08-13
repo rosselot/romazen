@@ -64,5 +64,6 @@ test('the compact forms have authoritative sales details', () => {
   assert.equal(atrium.dimensions, '3½″ H × 3½″ W');
   assert.equal(atrium.galleryImages.length, 7);
   assert.match(atrium.image, /atrium-cloche-signature/);
+  assert.match(atrium.galleryImages[3].src, /atrium-cloche-evening-v2/);
   assert.match(atrium.details, /complete bell-jar glass jacket/i);
 });
