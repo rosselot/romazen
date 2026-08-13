@@ -47,10 +47,31 @@ const parseStock = (value, fallback = false) => {
 
 const LABEL_PHOTOS = {
   'ripple-compact': {
-    image: '/assets/images/romazen-ripple-studio.jpeg',
+    image: '/assets/images/romazen-ripple-signature.jpeg',
     imageWidth: 1254,
+    galleryImages: [
+      { src: '/assets/images/romazen-ripple-signature.jpeg', width: 1254, alt: 'The Ripple candle in the RomaZen signature studio setting' },
+      { src: '/assets/images/romazen-ripple-roman.jpeg', width: 1254, alt: 'The Ripple candle with a Roman arch light treatment' },
+      { src: '/assets/images/romazen-ripple-morning.jpeg', width: 1254, alt: 'The Ripple candle in a quiet morning ritual setting' },
+      { src: '/assets/images/romazen-ripple-evening.jpeg', width: 1254, alt: 'The Ripple candle burning in an evening setting' },
+      { src: '/assets/images/romazen-ripple-detail.jpeg', width: 1254, alt: 'Close detail of The Ripple glass, wax, wick, and gold RomaZen mark' },
+      { src: '/assets/images/romazen-ripple-gift.jpeg', width: 1254, alt: 'The Ripple candle presented as a refined gift' },
+      { src: '/assets/images/romazen-ripple-pair-v2.jpeg', width: 1254, alt: 'Two Ripple candles arranged as a sculptural pair' },
+    ],
   },
-  'atrium-lidded': { image: '/assets/images/romazen-atrium-studio.jpeg', imageWidth: 1254 },
+  'atrium-lidded': {
+    image: '/assets/images/romazen-atrium-signature.jpeg',
+    imageWidth: 1254,
+    galleryImages: [
+      { src: '/assets/images/romazen-atrium-signature.jpeg', width: 1254, alt: 'The Atrium candle in the RomaZen signature studio setting' },
+      { src: '/assets/images/romazen-atrium-roman.jpeg', width: 1254, alt: 'The Atrium candle with a Roman arch light treatment' },
+      { src: '/assets/images/romazen-atrium-morning.jpeg', width: 1254, alt: 'The Atrium candle in a quiet morning ritual setting' },
+      { src: '/assets/images/romazen-atrium-evening.jpeg', width: 1254, alt: 'The Atrium candle burning with its glass lid beside it' },
+      { src: '/assets/images/romazen-atrium-detail.jpeg', width: 1254, alt: 'Close detail of The Atrium lid, glass, wax, wick, and gold RomaZen mark' },
+      { src: '/assets/images/romazen-atrium-gift.jpeg', width: 1254, alt: 'The Atrium candle presented as a refined gift' },
+      { src: '/assets/images/romazen-atrium-pair.jpeg', width: 1254, alt: 'Two lidded Atrium candles arranged as a sculptural pair' },
+    ],
+  },
   'silk-santal-33oz': { image: '/assets/images/romazen-limited-size-1.jpeg', imageWidth: 1254 },
   'roman-marble-8oz': { image: '/assets/images/romazen-limited-size-2.jpeg', imageWidth: 1254 },
   'midnight-fig-62oz': { image: '/assets/images/romazen-limited-size-3.jpeg', imageWidth: 1254 },
@@ -182,8 +203,7 @@ export const normalizeCandleRecord = (record) => {
     notes: collection?.notes ?? record.notes ?? record.scent_notes ?? record.scentNotes ?? record.description ?? 'Gardenia · Jasmine',
     image: labelPhoto?.image ?? record.image ?? record.image_url ?? record.imageUrl ?? '/assets/images/Living-Family.png',
     imageWidth: labelPhoto?.imageWidth ?? (Number(record.imageWidth ?? record.image_width) || 1024),
-    secondaryImage: labelPhoto?.secondaryImage ?? null,
-    secondaryImageWidth: labelPhoto?.secondaryImageWidth ?? null,
+    galleryImages: labelPhoto?.galleryImages ?? [],
     inStock: parseStock(record.inStock ?? record.in_stock ?? record.available, true),
     stockCount: Number.isInteger(stockCount) && stockCount >= 0 ? stockCount : null,
     details: collection?.details ?? record.details ?? record.long_description ?? record.description ?? null,

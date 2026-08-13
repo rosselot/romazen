@@ -111,6 +111,11 @@ const CandlePricingPage = () => {
   }, []);
 
   const selectedItem = candles.find((item) => item.id === selectedId) ?? null;
+  const selectedGallery = selectedItem?.galleryImages?.length
+    ? selectedItem.galleryImages
+    : selectedItem?.image
+      ? [{ src: selectedItem.image, width: selectedItem.imageWidth, alt: selectedItem.name }]
+      : [];
   const intimateForms = candles.filter((item) => INTIMATE_FORM_IDS.includes(item.id));
   const fourForms = candles.filter((item) => FOUR_FORM_IDS.includes(item.id));
   const bundleOffers = React.useMemo(() => BUNDLE_OFFERS.map((offer) => {
@@ -266,27 +271,19 @@ const CandlePricingPage = () => {
                   Close
                 </button>
 
-                <div className={selectedItem.secondaryImage ? styles.modalGallery : undefined}>
-                  {selectedItem.image && (
+                <div className={selectedGallery.length > 1 ? styles.modalGallery : undefined}>
+                  {selectedGallery.map((photo, index) => (
                     <ResponsiveImage
-                      src={selectedItem.image}
-                      naturalWidth={selectedItem.imageWidth}
-                      alt={selectedItem.name}
+                      key={photo.src}
+                      src={photo.src}
+                      naturalWidth={photo.width}
+                      alt={photo.alt}
                       className={styles.modalImage}
-                      loading="eager"
+                      loading={index < 2 ? 'eager' : 'lazy'}
                       decoding="async"
+                      sizes="(max-width: 640px) 100vw, 420px"
                     />
-                  )}
-                  {selectedItem.secondaryImage && (
-                    <ResponsiveImage
-                      src={selectedItem.secondaryImage}
-                      naturalWidth={selectedItem.secondaryImageWidth}
-                      alt={`${selectedItem.name} pair shown from two angles`}
-                      className={styles.modalImage}
-                      loading="eager"
-                      decoding="async"
-                    />
-                  )}
+                  ))}
                 </div>
 
                 <p className={styles.edition}>

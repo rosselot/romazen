@@ -57,7 +57,11 @@ test('the compact forms have authoritative sales details', () => {
   assert.equal(ripple.name, 'The Ripple');
   assert.equal(ripple.price, '$42.00');
   assert.equal(ripple.dimensions, '3½″ H × 3½″ W');
+  assert.equal(ripple.galleryImages.length, 7);
+  assert.match(ripple.image, /ripple-signature/);
   assert.equal(atrium.name, 'The Atrium');
   assert.equal(atrium.price, '$58.00');
   assert.equal(atrium.dimensions, '3½″ H × 3½″ W');
+  assert.equal(atrium.galleryImages.length, 7);
+  assert.match(atrium.image, /atrium-signature/);
 });
