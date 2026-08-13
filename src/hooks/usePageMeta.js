@@ -31,7 +31,7 @@ export const usePageMeta = ({ title, description, noIndex = false }) => {
     document.title = title;
 
     const canonicalUrl = `${PUBLIC_ORIGIN}${window.location.pathname}`;
-    const imageUrl = `${PUBLIC_ORIGIN}/og.png`;
+    const imageUrl = `${PUBLIC_ORIGIN}/og-six-forms.jpg`;
 
     ensureMetaTag('name', 'description', description);
     ensureMetaTag('name', 'robots', noIndex ? 'noindex,nofollow' : 'index,follow');
@@ -41,8 +41,8 @@ export const usePageMeta = ({ title, description, noIndex = false }) => {
     ensureMetaTag('property', 'og:description', description);
     ensureMetaTag('property', 'og:url', canonicalUrl);
     ensureMetaTag('property', 'og:image', imageUrl);
-    ensureMetaTag('property', 'og:image:width', '1731');
-    ensureMetaTag('property', 'og:image:height', '909');
+    ensureMetaTag('property', 'og:image:width', '1200');
+    ensureMetaTag('property', 'og:image:height', '633');
     ensureMetaTag('name', 'twitter:card', 'summary_large_image');
     ensureMetaTag('name', 'twitter:title', title);
     ensureMetaTag('name', 'twitter:description', description);

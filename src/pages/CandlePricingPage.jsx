@@ -5,7 +5,13 @@ import Button from '../components/UI/Button';
 import ResponsiveImage from '../components/UI/ResponsiveImage';
 import { supabase } from '../utils/supabase';
 import { INSTAGRAM_URL } from '../data/social';
-import { CANDLE_FORM_IDS, STORE_CANDLE_PRICES, normalizeCandleRecord } from '../data/candlePrices';
+import {
+  CANDLE_FORM_IDS,
+  FOUR_FORM_IDS,
+  INTIMATE_FORM_IDS,
+  STORE_CANDLE_PRICES,
+  normalizeCandleRecord,
+} from '../data/candlePrices';
 import { FREE_SHIPPING_THRESHOLD, getBundleDiscountRate } from '../data/commerce';
 import { usePageMeta } from '../hooks/usePageMeta';
 import { useOverlayA11y } from '../hooks/useOverlayA11y';
@@ -13,6 +19,13 @@ import { useCart } from '../context/CartContext';
 import styles from './CandlePricingPage.module.css';
 
 const BUNDLE_OFFERS = [
+  {
+    id: 'intimate-pair',
+    eyebrow: 'New compact duo',
+    name: 'The Intimate Pair',
+    formIds: INTIMATE_FORM_IDS,
+    description: 'The sculpted Ripple and gift-ready Atrium—two compact expressions of the same white-floral ritual.',
+  },
   {
     id: 'daily-ritual',
     eyebrow: 'Best first set',
@@ -31,7 +44,7 @@ const BUNDLE_OFFERS = [
     id: 'four-forms',
     eyebrow: 'Collector set',
     name: 'The Four Forms',
-    formIds: CANDLE_FORM_IDS,
+    formIds: FOUR_FORM_IDS,
     description: 'The complete silhouette—from the intimate Halo to the dramatic Monument.',
   },
 ];
@@ -82,7 +95,7 @@ const CandlePricingPage = () => {
         .filter(Boolean)
         .filter((item) => CANDLE_FORM_IDS.includes(item.id))
         .sort((a, b) => a.vesselOrder - b.vesselOrder);
-      if (remoteCandles.length > 0) {
+      if (remoteCandles.length === CANDLE_FORM_IDS.length) {
         setCandles(remoteCandles);
         setCatalogState('live');
       } else {
@@ -98,6 +111,8 @@ const CandlePricingPage = () => {
   }, []);
 
   const selectedItem = candles.find((item) => item.id === selectedId) ?? null;
+  const intimateForms = candles.filter((item) => INTIMATE_FORM_IDS.includes(item.id));
+  const fourForms = candles.filter((item) => FOUR_FORM_IDS.includes(item.id));
   const bundleOffers = React.useMemo(() => BUNDLE_OFFERS.map((offer) => {
     const items = offer.formIds
       .map((id) => candles.find((candle) => candle.id === id))
@@ -111,6 +126,7 @@ const CandlePricingPage = () => {
       regularTotal,
       bundleTotal: regularTotal * (1 - discountRate),
       discountPercent: Math.round(discountRate * 100),
+      shippingGap: Math.max(0, FREE_SHIPPING_THRESHOLD - (regularTotal * (1 - discountRate))),
       isAvailable: items.length === offer.formIds.length && items.every((item) => item.inStock),
     };
   }), [candles]);
@@ -123,8 +139,8 @@ const CandlePricingPage = () => {
   });
 
   usePageMeta({
-    title: 'The Four Forms: Gardenia & Jasmine Candles | RomaZen',
-    description: 'Shop RomaZen sculptural soy candles in four architectural forms, scented with gardenia and jasmine. Free standard shipping at $100.',
+    title: 'Gardenia & Jasmine Soy Candles in Six Forms | RomaZen',
+    description: 'Shop RomaZen Gardenia and Jasmine soy candles in two compact and four architectural glass forms. Sets save 10–15%; free standard shipping at $100.',
   });
 
   return (
@@ -132,10 +148,10 @@ const CandlePricingPage = () => {
       <section className={styles.page}>
         <div className="container">
           <div className={styles.header}>
-            <span className={styles.eyebrow}>The Four Forms · Gardenia &amp; Jasmine</span>
-            <h1 className={styles.title}>One Floral Ritual. Four Sculptural Forms.</h1>
+            <span className={styles.eyebrow}>The RomaZen Forms · Gardenia &amp; Jasmine</span>
+            <h1 className={styles.title}>One Floral Ritual. Six Sculptural Forms.</h1>
             <p className={styles.subtitle}>
-              Luminous gardenia opens into soft jasmine—a serene white-floral aroma, hand-poured in four architectural glass forms.
+              Luminous gardenia opens into soft jasmine—a serene white-floral aroma, now hand-poured in two intimate and four architectural glass forms.
             </p>
             <div className={styles.collectionPromises} aria-label="Collection highlights">
               <span>Hand-poured soy</span>
@@ -152,51 +168,50 @@ const CandlePricingPage = () => {
             </p>
           </div>
 
-          <div className={styles.grid}>
-            {candles.map((item) => (
-              <article key={item.id} className={styles.card}>
-                <button
-                  type="button"
-                  className={styles.cardButton}
-                  onClick={() => setSelectedId(item.id)}
-                  aria-label={`Open details for ${item.name}`}
-                >
-                {item.image && (
-                  <ResponsiveImage
-                    src={item.image}
-                    naturalWidth={item.imageWidth}
-                    alt={item.name}
-                    className={styles.cardImage}
-                    loading="lazy"
-                    decoding="async"
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                  />
-                )}
-                <p className={styles.edition}>
-                  {item.edition}{item.vesselLabel && ` · ${item.vesselLabel}`}
-                </p>
-                <div className={styles.top}>
-                  <h2 className={styles.name}>{item.name}</h2>
-                  <span className={styles.price}>{item.price}</span>
-                </div>
-                <p className={styles.meta}>{item.size}{item.burnTime && ` · ${item.burnTime}`}</p>
-                {item.dimensions && <p className={styles.dimensions}>{item.dimensions}</p>}
-                <p className={styles.notes}>{item.notes}</p>
-                <span className={`${styles.stockBadge} ${catalogState === 'live' ? (item.inStock ? styles.inStock : styles.outOfStock) : styles.unverified}`}>
-                  {catalogState === 'live' ? (item.inStock ? 'In Stock' : 'Sold Out') : 'Availability unverified'}
-                </span>
-                <span className={styles.viewDetails}>View details</span>
-                </button>
-              </article>
-            ))}
-          </div>
+          <section className={styles.collectionGroup} aria-labelledby="intimate-forms-heading">
+            <div className={styles.groupHeader}>
+              <span className={styles.eyebrow}>New · 3½″ H × 3½″ W</span>
+              <h2 id="intimate-forms-heading">The Intimate Forms</h2>
+              <p>Compact, tactile vessels made for personal rituals and polished gifting.</p>
+            </div>
+            <div className={`${styles.grid} ${styles.intimateGrid}`}>
+              {intimateForms.map((item) => (
+                <CandleCard
+                  key={item.id}
+                  item={item}
+                  catalogState={catalogState}
+                  onDetails={() => setSelectedId(item.id)}
+                  onAdd={() => addItem(item)}
+                />
+              ))}
+            </div>
+          </section>
+
+          <section className={styles.collectionGroup} aria-labelledby="four-forms-heading">
+            <div className={styles.groupHeader}>
+              <span className={styles.eyebrow}>The original architectural collection</span>
+              <h2 id="four-forms-heading">The Four Forms</h2>
+              <p>Four ascending silhouettes, from an intimate glow to a dramatic floral centerpiece.</p>
+            </div>
+            <div className={styles.grid}>
+              {fourForms.map((item) => (
+                <CandleCard
+                  key={item.id}
+                  item={item}
+                  catalogState={catalogState}
+                  onDetails={() => setSelectedId(item.id)}
+                  onAdd={() => addItem(item)}
+                />
+              ))}
+            </div>
+          </section>
 
           <section className={styles.bundleSection} aria-labelledby="bundle-heading">
             <div className={styles.bundleHeader}>
               <span className={styles.eyebrow}>Build Your Ritual</span>
               <h2 id="bundle-heading" className={styles.bundleHeading}>Intelligent combinations, automatic savings</h2>
               <p className={styles.bundleIntro}>
-                Choose two and save 10%, three and save 12%, or collect all four and save 15%. Savings appear automatically in your cart.
+                Choose any two and save 10%, three and save 12%, or four or more and save 15%. Savings appear automatically in your cart.
               </p>
             </div>
             <div className={styles.bundleGrid}>
@@ -213,6 +228,11 @@ const CandlePricingPage = () => {
                     <strong>${offer.bundleTotal.toFixed(2)}</strong>
                     <span className={styles.savingsBadge}>Save {offer.discountPercent}%</span>
                   </div>
+                  <p className={styles.bundleShipping}>
+                    {offer.shippingGap === 0
+                      ? 'Complimentary standard shipping unlocked.'
+                      : `Add $${offer.shippingGap.toFixed(2)} more for complimentary standard shipping.`}
+                  </p>
                   <Button
                     variant="dark"
                     disabled={catalogState !== 'live' || !offer.isAvailable}
@@ -246,16 +266,28 @@ const CandlePricingPage = () => {
                   Close
                 </button>
 
-                {selectedItem.image && (
-                  <ResponsiveImage
-                    src={selectedItem.image}
-                    naturalWidth={selectedItem.imageWidth}
-                    alt={selectedItem.name}
-                    className={styles.modalImage}
-                    loading="eager"
-                    decoding="async"
-                  />
-                )}
+                <div className={selectedItem.secondaryImage ? styles.modalGallery : undefined}>
+                  {selectedItem.image && (
+                    <ResponsiveImage
+                      src={selectedItem.image}
+                      naturalWidth={selectedItem.imageWidth}
+                      alt={selectedItem.name}
+                      className={styles.modalImage}
+                      loading="eager"
+                      decoding="async"
+                    />
+                  )}
+                  {selectedItem.secondaryImage && (
+                    <ResponsiveImage
+                      src={selectedItem.secondaryImage}
+                      naturalWidth={selectedItem.secondaryImageWidth}
+                      alt={`${selectedItem.name} pair shown from two angles`}
+                      className={styles.modalImage}
+                      loading="eager"
+                      decoding="async"
+                    />
+                  )}
+                </div>
 
                 <p className={styles.edition}>
                   {selectedItem.edition}{selectedItem.vesselLabel && ` · ${selectedItem.vesselLabel}`}
@@ -314,5 +346,51 @@ const CandlePricingPage = () => {
     </Layout>
   );
 };
+
+const CandleCard = ({ item, catalogState, onDetails, onAdd }) => (
+  <article className={styles.card}>
+    <button
+      type="button"
+      className={styles.cardButton}
+      onClick={onDetails}
+      aria-label={`Open details for ${item.name}`}
+    >
+      {item.image && (
+        <ResponsiveImage
+          src={item.image}
+          naturalWidth={item.imageWidth}
+          alt={item.name}
+          className={styles.cardImage}
+          loading="lazy"
+          decoding="async"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+        />
+      )}
+      <p className={styles.edition}>
+        {item.edition}{item.vesselLabel && ` · ${item.vesselLabel}`}
+      </p>
+      <div className={styles.top}>
+        <h3 className={styles.name}>{item.name}</h3>
+        <span className={styles.price}>{item.price}</span>
+      </div>
+      <p className={styles.meta}>{item.size}{item.burnTime && ` · ${item.burnTime}`}</p>
+      {item.dimensions && <p className={styles.dimensions}>{item.dimensions}</p>}
+      <p className={styles.notes}>{item.notes}</p>
+      <span className={`${styles.stockBadge} ${catalogState === 'live' ? (item.inStock ? styles.inStock : styles.outOfStock) : styles.unverified}`}>
+        {catalogState === 'live' ? (item.inStock ? 'In Stock' : 'Sold Out') : 'Availability unverified'}
+      </span>
+      <span className={styles.viewDetails}>View details</span>
+    </button>
+    <div className={styles.quickAdd}>
+      <Button
+        variant="dark"
+        disabled={catalogState !== 'live' || !item.inStock}
+        onClick={onAdd}
+      >
+        {catalogState !== 'live' ? 'Checkout paused' : item.inStock ? `Add ${item.name}` : 'Sold out'}
+      </Button>
+    </div>
+  </article>
+);
 
 export default CandlePricingPage;

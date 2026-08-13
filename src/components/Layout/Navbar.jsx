@@ -34,7 +34,7 @@ const Navbar = () => {
     }, []);
 
     const navLinks = [
-        { name: 'The Four Forms', path: '/prices' },
+        { name: 'Shop the Forms', path: '/prices' },
         { name: 'Shop All', path: '/shop' },
         { name: 'Candles', path: '/candles' },
         { name: 'About', path: '/about' },

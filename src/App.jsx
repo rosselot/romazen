@@ -40,10 +40,10 @@ function App() {
           element={
             <CollectionPage
               metaTitle="Shop All Products | Romazen"
-              metaDescription="Shop RomaZen sculptural soy candles in four architectural forms, featuring the signature Gardenia & Jasmine aroma."
+              metaDescription="Shop RomaZen sculptural soy candles in two intimate and four architectural forms, featuring Gardenia & Jasmine."
               eyebrow="Romazen Shop"
               heading="Shop All Products"
-              subheading="The Four Forms lead a collection curated for elevated everyday rituals."
+              subheading="Six sculptural candle forms lead a collection curated for elevated everyday rituals."
             />
           }
         />
@@ -52,10 +52,10 @@ function App() {
           element={
             <CollectionPage
               metaTitle="Luxury Soy Candles | Romazen"
-              metaDescription="Explore RomaZen Gardenia & Jasmine soy candles in four sculptural glass forms."
+              metaDescription="Explore RomaZen Gardenia & Jasmine soy candles in six sculptural glass forms."
               eyebrow="Category"
               heading="Luxury Soy Candles"
-              subheading="Luminous gardenia and soft jasmine, shaped into four architectural forms."
+              subheading="Luminous gardenia and soft jasmine, shaped into intimate and architectural glass forms."
               filterFn={hasCategory('candles')}
             />
           }

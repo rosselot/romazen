@@ -6,7 +6,7 @@ import {
   getBundleDiscountBps,
   qualifiesForFreeShipping,
 } from '../src/data/commerce.js';
-import { normalizeCandleRecord } from '../src/data/candlePrices.js';
+import { CANDLE_FORM_IDS, normalizeCandleRecord } from '../src/data/candlePrices.js';
 
 test('checkout input rejects malformed and excessive quantities', () => {
   assert.equal(validateCart({}).error.code, 'invalid_cart');
@@ -47,4 +47,17 @@ test('the four-form offer stays authoritative over legacy catalog labels', () =>
   assert.equal(arch.name, 'The Arch');
   assert.equal(arch.price, '$52.00');
   assert.equal(arch.notes, 'Gardenia · Jasmine');
+});
+
+test('the compact forms have authoritative sales details', () => {
+  const ripple = normalizeCandleRecord({ id: 'ripple-compact', inStock: true });
+  const atrium = normalizeCandleRecord({ id: 'atrium-lidded', inStock: true });
+
+  assert.equal(CANDLE_FORM_IDS.length, 6);
+  assert.equal(ripple.name, 'The Ripple');
+  assert.equal(ripple.price, '$42.00');
+  assert.equal(ripple.dimensions, '3½″ H × 3½″ W');
+  assert.equal(atrium.name, 'The Atrium');
+  assert.equal(atrium.price, '$58.00');
+  assert.equal(atrium.dimensions, '3½″ H × 3½″ W');
 });

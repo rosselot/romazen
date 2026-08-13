@@ -46,6 +46,13 @@ const parseStock = (value, fallback = false) => {
 };
 
 const LABEL_PHOTOS = {
+  'ripple-compact': {
+    image: '/assets/images/romazen-ripple.jpeg',
+    imageWidth: 1204,
+    secondaryImage: '/assets/images/romazen-ripple-pair.jpeg',
+    secondaryImageWidth: 452,
+  },
+  'atrium-lidded': { image: '/assets/images/romazen-atrium.jpeg', imageWidth: 1204 },
   'silk-santal-33oz': { image: '/assets/images/romazen-limited-size-1.jpeg', imageWidth: 1254 },
   'roman-marble-8oz': { image: '/assets/images/romazen-limited-size-2.jpeg', imageWidth: 1254 },
   'midnight-fig-62oz': { image: '/assets/images/romazen-limited-size-3.jpeg', imageWidth: 1254 },
@@ -54,12 +61,36 @@ const LABEL_PHOTOS = {
 };
 
 const COLLECTION_DETAILS = {
+  'ripple-compact': {
+    name: 'The Ripple',
+    edition: 'The Intimate Forms',
+    vesselLabel: 'Compact I',
+    dimensions: '3½″ H × 3½″ W',
+    order: 1,
+    size: 'Sculpted compact form',
+    price: 42,
+    notes: 'Gardenia · Jasmine',
+    details: 'A fluid, tactile glass silhouette designed for bedside tables, baths, desks, and effortless gifting.',
+    description: 'A compact sculpted-glass soy candle with luminous gardenia and soft jasmine notes.',
+  },
+  'atrium-lidded': {
+    name: 'The Atrium',
+    edition: 'The Intimate Forms',
+    vesselLabel: 'Compact II',
+    dimensions: '3½″ H × 3½″ W',
+    order: 2,
+    size: 'Lidded compact form',
+    price: 58,
+    notes: 'Gardenia · Jasmine',
+    details: 'A polished lidded form that protects the wax between burns and arrives naturally ready to gift.',
+    description: 'A premium lidded soy candle with luminous gardenia and soft jasmine notes.',
+  },
   'silk-santal-33oz': {
     name: 'The Halo',
     edition: 'The Four Forms',
     vesselLabel: 'Form I',
     dimensions: '3½″ H × 4″ W',
-    order: 1,
+    order: 3,
     size: 'Petite form',
     price: 38,
     notes: 'Gardenia · Jasmine',
@@ -71,7 +102,7 @@ const COLLECTION_DETAILS = {
     edition: 'The Four Forms',
     vesselLabel: 'Form II',
     dimensions: '6″ H × 3⅜″ W',
-    order: 2,
+    order: 4,
     size: 'Classic form',
     price: 52,
     notes: 'Gardenia · Jasmine',
@@ -83,7 +114,7 @@ const COLLECTION_DETAILS = {
     edition: 'The Four Forms',
     vesselLabel: 'Form III',
     dimensions: '8″ H × 3½″ W',
-    order: 3,
+    order: 5,
     size: 'Grand form',
     price: 74,
     notes: 'Gardenia · Jasmine',
@@ -95,7 +126,7 @@ const COLLECTION_DETAILS = {
     edition: 'The Four Forms',
     vesselLabel: 'Form IV',
     dimensions: '11″ H × 3½″ W',
-    order: 4,
+    order: 6,
     size: 'Monumental form',
     price: 110,
     notes: 'Gardenia · Jasmine',
@@ -116,12 +147,19 @@ const COLLECTION_DETAILS = {
   },
 };
 
-export const CANDLE_FORM_IDS = [
+export const INTIMATE_FORM_IDS = [
+  'ripple-compact',
+  'atrium-lidded',
+];
+
+export const FOUR_FORM_IDS = [
   'silk-santal-33oz',
   'roman-marble-8oz',
   'midnight-fig-62oz',
   'wall-street-smoke-45oz',
 ];
+
+export const CANDLE_FORM_IDS = [...INTIMATE_FORM_IDS, ...FOUR_FORM_IDS];
 
 export const normalizeCandleRecord = (record) => {
   if (!record) {
@@ -146,6 +184,8 @@ export const normalizeCandleRecord = (record) => {
     notes: collection?.notes ?? record.notes ?? record.scent_notes ?? record.scentNotes ?? record.description ?? 'Gardenia · Jasmine',
     image: labelPhoto?.image ?? record.image ?? record.image_url ?? record.imageUrl ?? '/assets/images/Living-Family.png',
     imageWidth: labelPhoto?.imageWidth ?? (Number(record.imageWidth ?? record.image_width) || 1024),
+    secondaryImage: labelPhoto?.secondaryImage ?? null,
+    secondaryImageWidth: labelPhoto?.secondaryImageWidth ?? null,
     inStock: parseStock(record.inStock ?? record.in_stock ?? record.available, true),
     stockCount: Number.isInteger(stockCount) && stockCount >= 0 ? stockCount : null,
     details: collection?.details ?? record.details ?? record.long_description ?? record.description ?? null,

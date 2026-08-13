@@ -25,15 +25,18 @@ describe('App routing UI', () => {
 
   it('renders QR candle pricing page on /prices', async () => {
     renderWithRoute('/prices');
-    expect(await screen.findByRole('heading', { name: /one floral ritual. four sculptural forms/i })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: /one floral ritual. six sculptural forms/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /open details for the ripple/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /open details for the atrium/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /open details for the halo/i })).toBeInTheDocument();
+    expect(screen.getAllByText('3½″ H × 3½″ W')).toHaveLength(2);
     expect(screen.getByText('6″ H × 3⅜″ W')).toBeInTheDocument();
-    expect(screen.getAllByText(/gardenia · jasmine/i).length).toBeGreaterThanOrEqual(4);
+    expect(screen.getAllByText(/gardenia · jasmine/i).length).toBeGreaterThanOrEqual(6);
   });
 
   it('redirects /scan to the pricing page', async () => {
     renderWithRoute('/scan');
-    expect(await screen.findByRole('heading', { name: /one floral ritual. four sculptural forms/i })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: /one floral ritual. six sculptural forms/i })).toBeInTheDocument();
   });
 
   it('closes the candle details modal on escape', async () => {
@@ -123,14 +126,14 @@ describe('App routing UI', () => {
   it('closes mobile menu on route change', () => {
     renderWithRoute('/candles');
 
-    expect(screen.getAllByRole('link', { name: /the four forms/i })).toHaveLength(1);
+    expect(screen.getAllByRole('link', { name: /shop the forms/i })).toHaveLength(1);
 
     const menuButton = document.querySelector('button[aria-label="Open navigation menu"]');
     expect(menuButton).not.toBeNull();
     fireEvent.click(menuButton);
-    expect(screen.getAllByRole('link', { name: /the four forms/i })).toHaveLength(2);
+    expect(screen.getAllByRole('link', { name: /shop the forms/i })).toHaveLength(2);
 
     fireEvent.click(screen.getAllByRole('link', { name: /romazen/i })[0]);
-    expect(screen.getAllByRole('link', { name: /the four forms/i })).toHaveLength(1);
+    expect(screen.getAllByRole('link', { name: /shop the forms/i })).toHaveLength(1);
   });
 });

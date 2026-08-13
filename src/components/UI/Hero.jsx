@@ -11,7 +11,7 @@ const Hero = () => {
             <div className={styles.overlay}></div>
             <div className={styles.content}>
                 <span className={styles.eyebrow}>
-                    The Four Forms · New York
+                    Six Sculptural Forms · New York
                 </span>
 
                 <h1 className={styles.headline}>
@@ -20,11 +20,11 @@ const Hero = () => {
 
                 <p className={styles.subheadline}>
                     Sculptural soy candles in a luminous Gardenia &amp; Jasmine aroma, <br />
-                    hand-poured in four architectural forms.
+                    hand-poured in intimate and architectural glass forms.
                 </p>
 
                 <div className={styles.cta}>
-                    <Button variant="primary" size="large" onClick={() => navigate('/prices')}>Shop the Four Forms</Button>
+                    <Button variant="primary" size="large" onClick={() => navigate('/prices')}>Shop All Six Forms</Button>
                     <Button variant="secondary" size="large" onClick={() => navigate('/about')}>Discover the Scent</Button>
                 </div>
             </div>

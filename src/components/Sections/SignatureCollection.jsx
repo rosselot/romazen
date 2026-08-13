@@ -8,7 +8,7 @@ import ResponsiveImage from '../UI/ResponsiveImage';
 
 const SignatureCollection = ({
     products = PRODUCTS,
-    eyebrow = 'One Scent · Four Forms',
+    eyebrow = 'One Scent · Six Forms',
     heading = 'The Gardenia & Jasmine Collection',
     subheading = 'A serene white-floral aroma shaped for every scale of ritual.',
     showFooterCta = true,
@@ -71,7 +71,7 @@ const SignatureCollection = ({
                                     {!product.inStock && !product.isCandle ? (
                                         <span className={styles.soldOutAction} role="status">Currently sold out</span>
                                     ) : product.isCandle ? (
-                                        <Button variant="dark" onClick={() => navigate('/prices')}>Explore the Four Forms</Button>
+                                        <Button variant="dark" onClick={() => navigate('/prices')}>Explore All Six Forms</Button>
                                     ) : (
                                         <Button variant="dark" onClick={() => addItem(product)}>Add to Cart</Button>
                                     )}

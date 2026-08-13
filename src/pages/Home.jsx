@@ -9,8 +9,8 @@ import { usePageMeta } from '../hooks/usePageMeta';
 
 const Home = () => {
     usePageMeta({
-        title: 'RomaZen | The Four Forms in Gardenia & Jasmine',
-        description: 'Discover RomaZen sculptural soy candles in four architectural forms, scented with luminous gardenia and soft jasmine.'
+        title: 'RomaZen | Six Gardenia & Jasmine Candle Forms',
+        description: 'Discover RomaZen sculptural soy candles in two intimate and four architectural glass forms, scented with luminous gardenia and soft jasmine.'
     });
 
     return (
