@@ -47,12 +47,10 @@ const parseStock = (value, fallback = false) => {
 
 const LABEL_PHOTOS = {
   'ripple-compact': {
-    image: '/assets/images/romazen-ripple.jpeg',
-    imageWidth: 1204,
-    secondaryImage: '/assets/images/romazen-ripple-pair.jpeg',
-    secondaryImageWidth: 452,
+    image: '/assets/images/romazen-ripple-studio.jpeg',
+    imageWidth: 1254,
   },
-  'atrium-lidded': { image: '/assets/images/romazen-atrium.jpeg', imageWidth: 1204 },
+  'atrium-lidded': { image: '/assets/images/romazen-atrium-studio.jpeg', imageWidth: 1254 },
   'silk-santal-33oz': { image: '/assets/images/romazen-limited-size-1.jpeg', imageWidth: 1254 },
   'roman-marble-8oz': { image: '/assets/images/romazen-limited-size-2.jpeg', imageWidth: 1254 },
   'midnight-fig-62oz': { image: '/assets/images/romazen-limited-size-3.jpeg', imageWidth: 1254 },
