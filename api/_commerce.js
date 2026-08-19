@@ -49,7 +49,9 @@ export const parseUnitAmount = (value) => {
 };
 
 export const getSiteUrl = (env = process.env) => {
-  const value = env.SITE_URL || (env.NODE_ENV === 'production' ? '' : 'http://localhost:4173');
+  const value = env.SITE_URL || (env.NODE_ENV === 'production'
+    ? 'https://www.romazen.com'
+    : 'http://localhost:4173');
 
   try {
     const url = new URL(value);

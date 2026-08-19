@@ -22,7 +22,7 @@ test('catalog prices and redirect origins are normalized safely', () => {
   assert.equal(parseUnitAmount('free'), null);
   assert.equal(getSiteUrl({ SITE_URL: 'https://www.romazen.com/path' }), 'https://www.romazen.com');
   assert.equal(getSiteUrl({ SITE_URL: 'javascript:alert(1)' }), null);
-  assert.equal(getSiteUrl({ NODE_ENV: 'production' }), null);
+  assert.equal(getSiteUrl({ NODE_ENV: 'production' }), 'https://www.romazen.com');
 });
 
 test('bundle savings and free shipping use the advertised thresholds', () => {

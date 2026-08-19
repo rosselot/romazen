@@ -139,7 +139,7 @@ export default async function handler(req, res) {
       line_items: lineItems,
       mode: 'payment',
       shipping_address_collection: {
-        allowed_countries: ['US', 'CA'], // Add your shipping countries
+        allowed_countries: ['US'],
       },
       shipping_options: [
         {

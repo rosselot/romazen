@@ -35,7 +35,7 @@ const BUNDLE_OFFERS = [
   },
   {
     id: 'roman-pair',
-    eyebrow: 'Most popular',
+    eyebrow: 'Architectural duo',
     name: 'The Roman Pair',
     formIds: ['roman-marble-8oz', 'midnight-fig-62oz'],
     description: 'Two architectural heights designed to give a room rhythm, depth, and warm floral presence.',
@@ -156,7 +156,7 @@ const CandlePricingPage = () => {
             <span className={styles.eyebrow}>The RomaZen Forms · Gardenia &amp; Jasmine</span>
             <h1 className={styles.title}>One Floral Ritual. Six Sculptural Forms.</h1>
             <p className={styles.subtitle}>
-              Luminous gardenia opens into soft jasmine—a serene white-floral aroma, now hand-poured in two intimate and four architectural glass forms.
+              A Chilean candle-making craft, now hand-poured in New York: luminous gardenia and soft jasmine in two intimate and four architectural glass forms.
             </p>
             <div className={styles.collectionPromises} aria-label="Collection highlights">
               <span>Hand-poured soy</span>
@@ -297,7 +297,7 @@ const CandlePricingPage = () => {
                 {selectedItem.dimensions && <p className={styles.dimensions}>{selectedItem.dimensions}</p>}
                 <p className={styles.notes}>{selectedItem.notes}</p>
                 {selectedItem.details && <p className={styles.details}>{selectedItem.details}</p>}
-                <p className={styles.details}>Trim the wick to ¼ inch before each burn. Never leave a burning candle unattended.</p>
+                <p className={styles.details}>Trim the wick to ¼ inch before each burn. Burn within sight on a heat-resistant surface, away from children, pets, drafts, and anything flammable.</p>
                 <p className={styles.commerceNote}>
                   Set savings apply automatically: 10% on two candles, 12% on three, and 15% on four or more. Free standard shipping at ${FREE_SHIPPING_THRESHOLD}+ after savings.
                 </p>

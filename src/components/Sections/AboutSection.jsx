@@ -21,18 +21,18 @@ const AboutSection = () => {
                     </div>
 
                     <div className={styles.content}>
-                        <span className={styles.eyebrow}>The RomaZen Signature</span>
-                        <h2 className={styles.heading}>A Garden in the <br /> Heart of the City.</h2>
+                        <span className={styles.eyebrow}>From Chile to New York</span>
+                        <h2 className={styles.heading}>A candle-making craft <br /> finds a new home.</h2>
                         <p className={styles.text}>
-                            RomaZen is a boutique candle house born in New York. Our signature aroma pairs the creamy radiance of gardenia with the soft, sensual lift of jasmine—an elegant white-floral composition made for moments of stillness.
+                            RomaZen began with a Chilean candle maker bringing her love of elegant forms and carefully balanced aromas to New York. Every candle is hand-poured in small batches for a warm, personal ritual at home.
                         </p>
                         <p className={styles.text}>
-                            The same fragrance is hand-poured into four clear-glass forms, allowing you to choose the scale of the ritual while keeping a calm, architectural language throughout your home.
+                            Our signature fragrance pairs luminous gardenia with soft jasmine and is poured into six clear-glass forms, so you can choose the scale of the ritual while keeping one calm, architectural language throughout your home.
                         </p>
                         <div className={styles.stats}>
                             <div className={styles.stat}>
-                                <span className={styles.statNumber}>100%</span>
-                                <span className={styles.statLabel}>Natural Soy</span>
+                                <span className={styles.statNumber}>Six</span>
+                                <span className={styles.statLabel}>Glass Forms</span>
                             </div>
                             <div className={styles.stat}>
                                 <span className={styles.statNumber}>Small</span>
