@@ -11,21 +11,21 @@ const Hero = () => {
             <div className={styles.overlay}></div>
             <div className={styles.content}>
                 <span className={styles.eyebrow}>
-                    Six Sculptural Forms · New York
+                    Chilean candle craft · Hand-poured in New York
                 </span>
 
                 <h1 className={styles.headline}>
-                    Roman Form. <br /> Modern Calm.
+                    Sculptural candles. <br /> A new home in New York.
                 </h1>
 
                 <p className={styles.subheadline}>
-                    Sculptural soy candles in a luminous Gardenia &amp; Jasmine aroma, <br />
-                    hand-poured in intimate and architectural glass forms.
+                    A Chilean candle maker brings her craft to six clear-glass forms, <br />
+                    all scented with luminous Gardenia &amp; Jasmine.
                 </p>
 
                 <div className={styles.cta}>
-                    <Button variant="primary" size="large" onClick={() => navigate('/prices')}>Shop All Six Forms</Button>
-                    <Button variant="secondary" size="large" onClick={() => navigate('/about')}>Discover the Scent</Button>
+                    <Button variant="primary" size="large" onClick={() => navigate('/prices')}>Shop Available Candles</Button>
+                    <Button variant="secondary" size="large" onClick={() => navigate('/about')}>Meet the Maker</Button>
                 </div>
             </div>
 

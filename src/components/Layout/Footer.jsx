@@ -17,10 +17,8 @@ const Footer = () => {
                     <div className={styles.links}>
                         <h2 className={styles.heading}>Explore</h2>
                         <ul>
-                            <li><Link to="/candles">Soy Candles</Link></li>
-                            <li><Link to="/soaps">Artisanal Soaps</Link></li>
-                            <li><Link to="/fragrances">Home Fragrances</Link></li>
-                            <li><Link to="/cleaning">Eco Cleaning</Link></li>
+                            <li><Link to="/prices">Candle Collection</Link></li>
+                            <li><Link to="/candles">All Candles</Link></li>
                         </ul>
                     </div>
 
@@ -28,7 +26,7 @@ const Footer = () => {
                         <h2 className={styles.heading}>Company</h2>
                         <ul>
                             <li><Link to="/about">Our Story</Link></li>
-                            <li><Link to="/sustainability">Sustainability</Link></li>
+                            <li><Link to="/sustainability">Our Process</Link></li>
                             <li><Link to="/contact">Contact</Link></li>
                         </ul>
                     </div>

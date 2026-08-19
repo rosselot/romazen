@@ -9,8 +9,8 @@ import { usePageMeta } from '../hooks/usePageMeta';
 
 const Home = () => {
     usePageMeta({
-        title: 'RomaZen | Six Gardenia & Jasmine Candle Forms',
-        description: 'Discover RomaZen sculptural soy candles in two intimate and four architectural glass forms, scented with luminous gardenia and soft jasmine.'
+        title: 'RomaZen | Chilean Candle Craft, Hand-Poured in New York',
+        description: 'Discover RomaZen sculptural soy candles: a Chilean candle-making craft, now hand-poured in New York in six Gardenia & Jasmine glass forms.'
     });
 
     return (

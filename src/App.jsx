@@ -104,14 +104,14 @@ function App() {
           element={
             <BasicPage
               title="About Romazen | Romazen"
-              description="Learn the story behind Romazen, a boutique wellness house inspired by the rhythm and elegance of New York."
+              description="Meet the Chilean candle maker behind RomaZen and her small-batch candle craft, now hand-poured in New York."
               eyebrow="Our Story"
-              body="Romazen was created to bring moments of stillness into fast city living. We handcraft premium home rituals rooted in design, calm, and everyday elegance."
+              body="RomaZen began with a Chilean candle maker bringing her love of elegant candles and carefully balanced aromas to a new home in New York."
               ctaLabel="Shop Collection"
               ctaTo="/shop"
             >
-              <p>Each product is developed in small batches with a focus on ingredient quality, scent architecture, and visual refinement.</p>
-              <p>Our goal is simple: make your space feel intentional, welcoming, and deeply personal.</p>
+              <p>Each candle is hand-poured in small batches with a focus on scent, finish, and sculptural glass forms.</p>
+              <p>Our goal is simple: bring a calm, beautiful ritual into the homes that are helping this new chapter begin.</p>
             </BasicPage>
           }
         />
@@ -119,15 +119,15 @@ function App() {
           path="/sustainability"
           element={
             <BasicPage
-              title="Sustainability | Romazen"
-              description="Read how Romazen prioritizes responsible sourcing, recyclable packaging, and conscious small-batch production."
-              eyebrow="Responsibility"
-              body="Our sustainability approach combines responsible materials, reduced-waste packaging, and long-term quality over short-term volume."
+              title="Small-Batch Craft | Romazen"
+              description="Read about RomaZen's small-batch candle-making approach and commitment to publishing only verified material and sourcing details."
+              eyebrow="Our Process"
+              body="RomaZen is a young, small-batch candle house focused on consistent candles, careful finishing, and clear burn guidance."
               ctaLabel="Explore Products"
               ctaTo="/shop"
             >
-              <p>We prioritize recyclable packaging, thoughtful supplier selection, and durable product design.</p>
-              <p>As the brand grows, we continuously evaluate how to reduce footprint without compromising craftsmanship.</p>
+              <p>We make in limited quantities so each candle can receive close attention before it leaves our hands.</p>
+              <p>As we document suppliers and packaging materials, we will publish specific sourcing details rather than broad claims.</p>
             </BasicPage>
           }
         />

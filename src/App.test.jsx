@@ -1,6 +1,7 @@
 import { MemoryRouter } from 'react-router-dom';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import App from './App';
+import { CartProvider, useCart } from './context/CartContext';
 
 const renderWithRoute = (route) =>
   render(
@@ -12,10 +13,26 @@ const renderWithRoute = (route) =>
 beforeEach(() => localStorage.clear());
 afterEach(() => vi.unstubAllGlobals());
 
+const CartHarness = () => {
+  const { addItem, items } = useCart();
+  return (
+    <>
+      <button onClick={() => addItem({ id: 'halo', name: 'The Halo', price: '$38.00' })}>Add candle</button>
+      <span>{items.length}</span>
+    </>
+  );
+};
+
 describe('App routing UI', () => {
+  it('adds a single candle to the cart', () => {
+    render(<CartProvider><CartHarness /></CartProvider>);
+    fireEvent.click(screen.getByRole('button', { name: /add candle/i }));
+    expect(screen.getByText('1')).toBeInTheDocument();
+  });
+
   it('renders the home hero on /', () => {
     renderWithRoute('/');
-    expect(screen.getByRole('heading', { name: /roman form. modern calm/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /sculptural candles. a new home in new york/i })).toBeInTheDocument();
   });
 
   it('renders filtered candles collection on /candles', async () => {

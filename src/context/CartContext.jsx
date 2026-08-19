@@ -23,7 +23,10 @@ export const CartProvider = ({ children }) => {
   }, [items]);
 
   const addItem = (product) => {
-    const [safeProduct] = sanitizeCartItems([{ ...product, quantity: 1 }]);
+    const [safeProduct] = sanitizeCartItems({
+      version: CART_VERSION,
+      items: [{ ...product, quantity: 1 }],
+    });
     if (!safeProduct || product.inStock === false) return;
 
     setItems((prevItems) => {

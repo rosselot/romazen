@@ -1,18 +1,18 @@
 import React from 'react';
 import styles from './SustainabilitySection.module.css';
-import { Leaf, Recycle, Heart } from 'lucide-react';
+import { Leaf, Shapes, Heart } from 'lucide-react';
 
 const SustainabilitySection = () => {
     const values = [
         {
             icon: <Leaf size={32} />,
-            title: 'Clean Ingredients',
-            description: '100% natural soy wax with a refined Gardenia & Jasmine fragrance composition.'
+            title: 'Soy Wax',
+            description: 'Hand-poured soy wax with a refined Gardenia & Jasmine fragrance composition.'
         },
         {
-            icon: <Recycle size={32} />,
-            title: 'Eco-Friendly',
-            description: 'Recyclable packaging and sustainable sourcing practices.'
+            icon: <Shapes size={32} />,
+            title: 'Six Glass Forms',
+            description: 'Two intimate and four architectural silhouettes for different rooms and rituals.'
         },
         {
             icon: <Heart size={32} />,
